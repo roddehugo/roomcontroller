@@ -44,8 +44,8 @@ Moreover, their licensing is not free for other devices than ST ones. As per
 their [presentation slides][tgfx-presentation]:
 
 > TouchGFX is a software framework written in C++ that unlocks the graphical user
-interface of STM32 hardware.  The technology lets you create high-end GUIs that
-fully live up to today's smartphone standards at a fraction of the cost.
+> interface of STM32 hardware.  The technology lets you create high-end GUIs that
+> fully live up to today's smartphone standards at a fraction of the cost.
 
 > TouchGFX is integrated with the STM32Cube ecosystem.
 
