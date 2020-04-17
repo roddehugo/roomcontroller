@@ -6,6 +6,10 @@
 - [LittlevGL](#littlevgl)
 - ~~[TouchGFX](#touchgfx)~~
 
+## Alternatives
+
+- [µGFX](#µgfx)
+
 ### Considerations
 
 What are we looking for?
@@ -20,13 +24,15 @@ General topics:
 Engineering topics:
 
 - Examples project on targeted platforms
-- Presence of simulator or integration with Qemu
+- Presence of simulator or integration with QEMU
 - Ease of proving on Raspbian or Ubuntu (Debian based OS)
 - Ease of portability on Yocto based Linux
 
 ## Qt
 
 ## LittlevGL
+
+## µGFX
 
 ## TouchGFX
 
@@ -45,8 +51,10 @@ fully live up to today's smartphone standards at a fraction of the cost.
 
 > TouchGFX is FREE with STM32!
 
+
 [qt-homepage]: https://www.qt.io
 [lvgl-homepage]: https://littlevgl.com
+[ugfx-homepage]: https://ugfx.io
 [tgfx-homepage]:https://www.touchgfx.com
 [tgfx-presentation]:https://www.st.com/content/dam/AME/2019/developers-conference-2019/presentations/STDevCon19_1.4_STM32TouchGFX.pdf
 [tgfx-cortex-a7]:https://touchgfx.zendesk.com/hc/en-us/community/posts/360019432311-TouchGFX-core-library-for-Cortex-A7
