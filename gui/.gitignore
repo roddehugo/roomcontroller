@@ -1,0 +1,10 @@
+# C/C++
+*.d
+*.o
+*.a
+*.lib
+*.bin
+*.dSYM/
+
+# Build system
+obj/

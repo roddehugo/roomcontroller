@@ -5,6 +5,7 @@ This repository aims at playing with LVGL for building a Room Controller.
 ## Structure
 
     ├── docs # single source of documentation and knownledge database.
+    ├── gui # room controller gui application.
     ├── playground # where to play with libraries, tools, etc.
     └── readme.md # what you are reading right now.
 
