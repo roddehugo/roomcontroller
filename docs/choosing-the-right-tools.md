@@ -1,5 +1,11 @@
 # Choosing the Right Tools
 
+As a short intro, a [word from an expert][gui-creation-framebuffer] mentioning
+LittlevGL and µGFX (2018). It is a good introduction to the subject. As a
+complement, targeting Embedded Linux systems, read [this
+post][gui-embedded-linux]. It is a little outdated though (2012). And finally,
+a fairly complete comparison of [C/C++ GUI libraries][c-cpp-gui-libraries] (2018).
+
 ## Libraries
 
 - [Qt](#qt)
@@ -135,6 +141,9 @@ their [presentation slides][tgfx-presentation]:
 > TouchGFX is FREE with STM32!
 
 
+[gui-creation-framebuffer]:https://bkhome.org/news/201808/gui-creation-for-the-linux-framebuffer.html
+[gui-embedded-linux]:http://bec-systems.com/site/890/graphical-solutions-for-embedded-linux
+[c-cpp-gui-libraries]:https://philippegroarke.com/posts/2018/c++_ui_solutions/
 [qt-homepage]: https://www.qt.io
 [lvgl-homepage]: https://littlevgl.com
 [ugfx-homepage]: https://ugfx.io
