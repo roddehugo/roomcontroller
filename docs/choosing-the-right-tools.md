@@ -1,14 +1,11 @@
 # Choosing the Right Tools
 
-## Options
+## Libraries
 
 - [Qt](#qt)
 - [LittlevGL](#littlevgl)
-- ~~[TouchGFX](#touchgfx)~~
-
-## Alternatives
-
 - [µGFX](#µgfx)
+- ~~[TouchGFX](#touchgfx)~~
 
 ## Considerations
 
@@ -33,7 +30,7 @@ Engineering topics:
 
 ## Comparison
 
-| Feature       | Qt        | LittlevGL | µFGX      |
+| Feature       | Qt        | LittlevGL | µGFX      |
 | ---           | ---       | ---       | ---       |
 | Licensing     | annual    | free      | one-time  |
 | Popularity    | very      | growing   | unknown   |
@@ -65,7 +62,7 @@ Engineering topics:
 - High learning curve because it is big
 - Complicated C++ feature used
 
-### [LittlevGL][littlevgl-homepage]
+### [LittlevGL][lvgl-homepage]
 
 #### Pros
 
@@ -120,7 +117,7 @@ I did not check for Drag&Drop and did not spend so much time on it as LittlevGL
 more or less have the same Pros—except there is no company behind (yet)— and
 less Cons.
 
-### [TouchGFX][touchgfx-homepage]
+### [TouchGFX][tgfx-homepage]
 
 TouchGFX has been discarded from the study.  As per their [presentation
 slides][tgfx-presentation] and the [help center][tgfx-cortex-a7], it seems no
