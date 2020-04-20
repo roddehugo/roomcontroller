@@ -1,5 +1,14 @@
 # Playground with the Linux Framebuffer
 
+## What is a frame buffer device?
+
+Taken from Geert Uytterhoeven's framebuffer.txt in the linux kernel sources:
+
+> A framebuffer device is an abstraction for the graphic hardware. It represents
+> the frame buffer of some video hardware, and allows application software to
+> access the graphic hardware through a well-defined interface, so that the
+> software doesn't need to know anything about the low-level interface stuff.
+
 ## Why use the frame buffer directly?
 
 The frame buffer device is a very low-level interface to display something on
@@ -103,6 +112,24 @@ As per [Linux Framebuffer drivers for small TFT LCD display][git-notro-fbtft]:
 If one wants to read someone struggling to setup its [LCD driver at
 boot][lcd-driver-boot], as of Octobre 2015. Hence a little outdated.
 
+## Going further
+
+Read the [Framebuffer HOWTO][framebuffer-howto] by Alex Buell (2010):
+
+> This document describes how to use the framebuffer devices in Linux with a
+> variety of platforms. This also includes how to set up multi-headed
+> displays.
+
+Some chapters that are interesting in our case:
+
+    Table of Contents
+    1. Contributors
+    2. What is a framebuffer device?
+    3. What advantages does framebuffer devices have?
+    4. Using framebuffer devices on x86 platforms
+    10. Using framebuffer devices on ARM platforms
+    13. Changing Console Modes
+    17. Looking for further information
 
 [make-implicit-rules]:https://www.gnu.org/software/make/manual/html_node/Implicit-Rules.html
 [fbinfo]:http://raspberrycompote.blogspot.com/2012/12/low-level-graphics-on-raspberry-pi-part_9509.html
@@ -117,3 +144,4 @@ boot][lcd-driver-boot], as of Octobre 2015. Hence a little outdated.
 [etc-rc-local]:https://www.raspberrypi.org/forums/viewtopic.php?t=222402
 [git-notro-fbtft]:https://github.com/notro/fbtft
 [lcd-driver-boot]:https://www.raspberrypi.org/forums/viewtopic.php?t=123676
+[framebuffer-howto]:https://www.tldp.org/HOWTO/text/Framebuffer-HOWTO
