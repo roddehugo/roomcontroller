@@ -8,6 +8,11 @@ ifeq ($(PROGRAM),)
 $(error PROGRAM is not defined)
 endif
 
+# Check TARGET is defined.
+ifeq ($(TARGET),)
+$(error TARGET is not defined)
+endif
+
 # Check SOURCES are specified.
 ifeq ($(SOURCES),)
 $(error SOURCES are not specified)
@@ -52,6 +57,9 @@ vpath %.cc $(BASE)
 
 # Include flags.
 include $(BUILD)/flags.mk
+
+# Include target specific flags.
+include $(BUILD)/$(TARGET).mk
 
 # Decline objects from source files.
 .SECONDARY: $(OBJS)
