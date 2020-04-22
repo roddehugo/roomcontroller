@@ -151,6 +151,11 @@
 #  define LV_USE_BTN                    0
 #endif
 
+/* Enable button-state animations (dependencies: animation). */
+#ifndef LV_BTN_INK_EFFECT
+#  define LV_BTN_INK_EFFECT             0
+#endif
+
 /* Button matrix (dependencies: -). */
 #ifndef LV_USE_BTNM
 #  define LV_USE_BTNM                   0
@@ -174,6 +179,12 @@
 /* Chart (dependencies: -). */
 #ifndef LV_USE_CHART
 #  define LV_USE_CHART                  0
+#endif
+
+/* Define tick axis label max len to saner value:
+ * 256 leads to [-Wtautological-constant-out-of-range-compare] warning. */
+#ifndef LV_CHART_AXIS_TICK_LABEL_MAX_LEN
+#  define LV_CHART_AXIS_TICK_LABEL_MAX_LEN    32
 #endif
 
 /* Container (dependencies: -). */
