@@ -100,22 +100,25 @@ $(OBJDIR):
 	@echo "MKDIR $@"
 	$(Q)$(MKDIR) $@
 
+# Include dependency generation rules.
+include $(BUILD)/deps.mk
+
 # Making rules.
 $(PROGRAM).bin: $(OBJS) $(LIBDEPS)
 	@echo "LD    $@"
 	$(Q)$(LD) $(LDFLAGS) $(LDLIBS) $(OBJS) -o $@
 
-$(OBJDIR)/%.o: %.S | $(OBJDIR)
+$(OBJDIR)/%.o: %.S $(OBJDIR)/defs.old | $(OBJDIR)
 	@echo "AS    $<"
 	$(call mkdir_if_needed,$@)
 	$(Q)$(CC) $(ASFLAGS) $(CPPFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: %.c | $(OBJDIR)
+$(OBJDIR)/%.o: %.c $(OBJDIR)/defs.old | $(OBJDIR)
 	@echo "CC    $<"
 	$(call mkdir_if_needed,$@)
 	$(Q)$(CC) $(CSTD) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: %.cc | $(OBJDIR)
+$(OBJDIR)/%.o: %.cc $(OBJDIR)/defs.old | $(OBJDIR)
 	@echo "CXX   $<"
 	$(call mkdir_if_needed,$@)
 	$(Q)$(CXX) $(CXXSTD) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
