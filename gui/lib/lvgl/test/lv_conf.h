@@ -47,7 +47,10 @@ typedef void * lv_obj_user_data_t;
  * Default settings
  *==================*/
 
-/* Be sure every define has a default value. */
+/* Be sure every unset define is defined disabled by default. */
+#include "lv_defaults.h"
+
+/* Be sure every define has a default value set by library. */
 #include "lvgl/src/lv_conf_checker.h"
 
 #endif /* LV_CONF_H */
