@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+
+"""Seek Makefiles and run given targets."""
+
+import os
+import sys
+import argparse
+import subprocess
+import multiprocessing
+
+class Result:
+    def __init__(self):
+        self.fails = 0
+        self.failed = []
+
+    def status(self):
+        exitcode = 1
+        status = []
+        if self.fails:
+            status.append('fails: ' + str(self.fails))
+        if not self.fails:
+            status.append('pass')
+            exitcode = 0
+        return status, exitcode
+
+
+class Runner:
+    def __init__(self, jobs, targets):
+        self.jobs = jobs
+        self.targets = targets
+
+    def run(self, d, r, stdout):
+        stdout.flush()
+        cmd = ['make', '-j', str(self.jobs), '-C', d] + self.targets
+        ret = subprocess.call(cmd, stdout=stdout)
+        if ret == 0:
+            passed = True
+        else:
+            passed = False
+            r.fails += 1
+            r.failed.append(d)
+        return passed
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('targets', nargs='*',
+            metavar='TARGET', help='set Makefile targets')
+    p.add_argument('-v', '--verbose', action='store_true', default=False,
+            help='sink stdout into a black hole')
+    p.add_argument('-i', '--include', action='append',
+            metavar='DIR', help='only run in listed directories')
+    p.add_argument('-e', '--exclude', action='append',
+            metavar='DIR', help='do not run in listed directories')
+    p.add_argument('-j', '--jobs', type=int, metavar='JOBS',
+            dest = 'jobs', default=8,
+            help='parallel build job count to use (passed to make)')
+
+    options = p.parse_args()
+
+    if options.jobs > multiprocessing.cpu_count() * 2:
+        print('Warning: parallel build using {0} jobs (> 2x{1} cpus)!'.format(
+            options.jobs, multiprocessing.cpu_count()))
+
+    if options.include:
+        dirs = options.include
+    else:
+        files = subprocess.check_output(['git', 'ls-files'], text=True).split('\n')
+        dirs = [ os.path.dirname(f) for f in files if f.endswith('/Makefile') ]
+
+    if options.exclude:
+        exclude_set = set(options.exclude)
+        dirs = [ d for d in dirs if d not in exclude_set ]
+
+    result = Result()
+    runner = Runner(options.jobs, options.targets)
+    out = sys.stdout if options.verbose else open(os.devnull, 'w')
+    for d in dirs:
+        print('>>>', d)
+        passed = runner.run(d, result, out)
+        passfail = 'PASS' if passed else 'FAIL'
+        print('<<<', d, passfail)
+
+    s, exitcode = result.status()
+    if result.failed:
+        print('=== failed tests:')
+        for d in result.failed:
+            print('=== ', d)
+    print ('=== status:', ', '.join(s))
+
+    sys.exit(exitcode)
