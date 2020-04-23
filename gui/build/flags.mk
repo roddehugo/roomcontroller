@@ -13,6 +13,7 @@ CFLAGS += -Wdouble-promotion # Warn for float implicitly promoted to double.
 CFLAGS += -Wformat=2 # Enable '-Wformat' plus additional format checks.
 CFLAGS += -Wmissing-prototypes # Warn functions defined without prototype.
 CFLAGS += -Wno-unused-parameter # Do not warn for unused parameter.
+CFLAGS += -Wno-unused-function # Do not warn for unused functions.
 CFLAGS += -Wshadow # Warn for any global shadowing.
 CFLAGS += -Wstrict-prototypes # Warn functions defined without argument types.
 CFLAGS += -Wundef # Warn undefined identifier evaluated in #if directive.
