@@ -9,32 +9,32 @@
 
 /* Enable animations. */
 #ifndef LV_USE_ANIMATION
-#  define LV_USE_ANIMATION              0
+#  define LV_USE_ANIMATION              1
 #endif
 
 /* Enable shadow drawing. */
 #ifndef LV_USE_SHADOW
-#  define LV_USE_SHADOW                 0
+#  define LV_USE_SHADOW                 1
 #endif
 
 /* Enable object groups. */
 #ifndef LV_USE_GROUP
-#  define LV_USE_GROUP                  0
+#  define LV_USE_GROUP                  1
 #endif
 
 /* Enable GPU interface. */
 #ifndef LV_USE_GPU
-#  define LV_USE_GPU                    0
+#  define LV_USE_GPU                    1
 #endif
 
 /* Enable file system. */
 #ifndef LV_USE_FILESYSTEM
-#  define LV_USE_FILESYSTEM             0
+#  define LV_USE_FILESYSTEM             1
 #endif
 
 /* Enable user data to drivers and objects. */
 #ifndef LV_USE_USER_DATA
-#  define LV_USE_USER_DATA              0
+#  define LV_USE_USER_DATA              1
 #endif
 
 /*==============
@@ -42,12 +42,12 @@
  *==============*/
 
 #ifndef LV_USE_LOG
-#  define LV_USE_LOG                    0
+#  define LV_USE_LOG                    1
 #endif
 
 #if LV_USE_LOG
 #  ifndef LV_LOG_LEVEL
-#    define LV_LOG_LEVEL                LV_LOG_LEVEL_WARN
+#    define LV_LOG_LEVEL                LV_LOG_LEVEL_INFO
 #  endif
 #  ifndef LV_LOG_PRINTF
 #    define LV_LOG_PRINTF               1
@@ -59,11 +59,11 @@
  *================*/
 
 #ifndef LV_USE_DEBUG
-#  define LV_USE_DEBUG                  0
+#  define LV_USE_DEBUG                  1
 #endif
 
 #ifndef LV_USE_SLOW_DEBUG
-#  define LV_USE_SLOW_DEBUG             0
+#  define LV_USE_SLOW_DEBUG             1
 #endif
 
 #if LV_USE_DEBUG
@@ -92,7 +92,7 @@
 
 /* Support bidirectional texts. */
 #ifndef LV_USE_BIDI
-#  define LV_USE_BIDI                   0
+#  define LV_USE_BIDI                   1
 #endif
 
 /*================
@@ -140,17 +140,17 @@
 
 /* Arc (dependencies: -). */
 #ifndef LV_USE_ARC
-#  define LV_USE_ARC                    0
+#  define LV_USE_ARC                    1
 #endif
 
 /* Bar (dependencies: -). */
 #ifndef LV_USE_BAR
-#  define LV_USE_BAR                    0
+#  define LV_USE_BAR                    1
 #endif
 
 /* Button (dependencies: lv_cont). */
 #ifndef LV_USE_BTN
-#  define LV_USE_BTN                    0
+#  define LV_USE_BTN                    1
 #endif
 
 /* Enable button-state animations (dependencies: animation). */
@@ -160,7 +160,7 @@
 
 /* Button matrix (dependencies: -). */
 #ifndef LV_USE_BTNM
-#  define LV_USE_BTNM                   0
+#  define LV_USE_BTNM                   1
 #endif
 
 /* Calendar (dependencies: -). */
@@ -175,7 +175,7 @@
 
 /* Check box (dependencies: lv_btn, lv_label). */
 #ifndef LV_USE_CB
-#  define LV_USE_CB                     0
+#  define LV_USE_CB                     1
 #endif
 
 /* Chart (dependencies: -). */
@@ -191,122 +191,122 @@
 
 /* Container (dependencies: -). */
 #ifndef LV_USE_CONT
-#  define LV_USE_CONT                   0
+#  define LV_USE_CONT                   1
 #endif
 
 /* Color picker (dependencies: -). */
 #ifndef LV_USE_CPICKER
-#  define LV_USE_CPICKER                0
+#  define LV_USE_CPICKER                1
 #endif
 
 /* Drop down list (dependencies: lv_page, lv_label, lv_symbol_def.h). */
 #ifndef LV_USE_DDLIST
-#  define LV_USE_DDLIST                 0
+#  define LV_USE_DDLIST                 1
 #endif
 
 /* Gauge (dependencies:lv_bar, lv_lmeter). */
 #ifndef LV_USE_GAUGE
-#  define LV_USE_GAUGE                  0
+#  define LV_USE_GAUGE                  1
 #endif
 
 /* Image (dependencies: lv_label). */
 #ifndef LV_USE_IMG
-#  define LV_USE_IMG                    0
+#  define LV_USE_IMG                    1
 #endif
 
 /* Image Button (dependencies: lv_btn). */
 #ifndef LV_USE_IMGBTN
-#  define LV_USE_IMGBTN                 0
+#  define LV_USE_IMGBTN                 1
 #endif
 
 /* Keyboard (dependencies: lv_btnm). */
 #ifndef LV_USE_KB
-#  define LV_USE_KB                     0
+#  define LV_USE_KB                     1
 #endif
 
 /* Label (dependencies: -). */
 #ifndef LV_USE_LABEL
-#  define LV_USE_LABEL                  0
+#  define LV_USE_LABEL                  1
 #endif
 
 /* LED (dependencies: -). */
 #ifndef LV_USE_LED
-#  define LV_USE_LED                    0
+#  define LV_USE_LED                    1
 #endif
 
 /* Line (dependencies: -). */
 #ifndef LV_USE_LINE
-#  define LV_USE_LINE                   0
+#  define LV_USE_LINE                   1
 #endif
 
 /* List (dependencies: lv_page, lv_btn, lv_label, lv_img). */
 #ifndef LV_USE_LIST
-#  define LV_USE_LIST                   0
+#  define LV_USE_LIST                   1
 #endif
 
 /* Line meter (dependencies: -). */
 #ifndef LV_USE_LMETER
-#  define LV_USE_LMETER                 0
+#  define LV_USE_LMETER                 1
 #endif
 
 /* Message box (dependencies: lv_rect, lv_btnm, lv_label). */
 #ifndef LV_USE_MBOX
-#  define LV_USE_MBOX                   0
+#  define LV_USE_MBOX                   1
 #endif
 
 /* Page (dependencies: lv_cont). */
 #ifndef LV_USE_PAGE
-#  define LV_USE_PAGE                   0
+#  define LV_USE_PAGE                   1
 #endif
 
 /* Preload (dependencies: lv_arc, lv_anim). */
 #ifndef LV_USE_PRELOAD
-#  define LV_USE_PRELOAD                0
+#  define LV_USE_PRELOAD                1
 #endif
 
 /* Roller (dependencies: lv_ddlist). */
 #ifndef LV_USE_ROLLER
-#  define LV_USE_ROLLER                 0
+#  define LV_USE_ROLLER                 1
 #endif
 
 /* Slider (dependencies: lv_bar). */
 #ifndef LV_USE_SLIDER
-#  define LV_USE_SLIDER                 0
+#  define LV_USE_SLIDER                 1
 #endif
 
 /* Spinbox (dependencies: lv_ta). */
 #ifndef LV_USE_SPINBOX
-#  define LV_USE_SPINBOX                0
+#  define LV_USE_SPINBOX                1
 #endif
 
 /* Switch (dependencies: lv_slider). */
 #ifndef LV_USE_SW
-#  define LV_USE_SW                     0
+#  define LV_USE_SW                     1
 #endif
 
 /* Text area (dependencies: lv_label, lv_page). */
 #ifndef LV_USE_TA
-#  define LV_USE_TA                     0
+#  define LV_USE_TA                     1
 #endif
 
 /* Table (dependencies: lv_label). */
 #ifndef LV_USE_TABLE
-#  define LV_USE_TABLE                  0
+#  define LV_USE_TABLE                  1
 #endif
 
 /* Tab (dependencies: lv_page, lv_btnm). */
 #ifndef LV_USE_TABVIEW
-#  define LV_USE_TABVIEW                0
+#  define LV_USE_TABVIEW                1
 #endif
 
 /* Tileview (dependencies: lv_page). */
 #ifndef LV_USE_TILEVIEW
-#  define LV_USE_TILEVIEW               0
+#  define LV_USE_TILEVIEW               1
 #endif
 
 /* Window (dependencies: lv_cont, lv_btn, lv_label, lv_img, lv_page). */
 #ifndef LV_USE_WIN
-#  define LV_USE_WIN                    0
+#  define LV_USE_WIN                    1
 #endif
 
 #endif /* LV_DEFAULTS_H */
