@@ -194,6 +194,30 @@ lv_obj_t * draw_object<OBJECT>(const json & o,
 }
 
 template <>
+lv_obj_t * draw_object<LABEL>(const json & o,
+        lv_obj_t * parent, lv_obj_t * obj)
+{
+    if (!obj)
+    {
+        obj = lv_cont_create(parent, nullptr);
+        obj = draw_object<OBJECT>(o, parent, obj);
+        lv_cont_set_fit2(obj, LV_FIT_NONE, LV_FIT_TIGHT);
+        lv_cont_set_layout(obj, LV_LAYOUT_CENTER);
+        lv_cont_set_style(obj, LV_CONT_STYLE_MAIN, &lv_style_transp);
+    }
+
+    if (o.contains("text"))
+    {
+        const auto & key = o["text"].get_ref<const std::string&>();
+        lv_obj_t * lbl = lv_label_create(obj, nullptr);
+        lv_label_set_text(lbl, key.c_str());
+        lv_label_set_align(lbl, LV_LABEL_ALIGN_CENTER);
+    }
+
+    return obj;
+}
+
+template <>
 lv_obj_t * draw_object<BUTTON>(const json & o,
         lv_obj_t * parent, lv_obj_t * obj)
 {
@@ -201,6 +225,13 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         obj = lv_btn_create(parent, nullptr);
 
     obj = draw_object<OBJECT>(o, parent, obj);
+
+    if (o.contains("text"))
+    {
+        const auto & key = o["text"].get_ref<const std::string&>();
+        lv_obj_t * lbl = lv_label_create(obj, nullptr);
+        lv_label_set_text(lbl, key.c_str());
+    }
 
     return obj;
 }
@@ -219,6 +250,9 @@ static void draw_component(const json & c, lv_obj_t * parent)
             break;
         case BUTTON:
             draw_object<BUTTON>(properties, parent);
+            break;
+        case LABEL:
+            draw_object<LABEL>(properties, parent);
             break;
         default:
             lwarn("component type not handled id=%s", id.c_str());
@@ -271,6 +305,23 @@ int main(int argc, const char ** argv)
         gui::Screen screen;
 
         Gui gui(display, pointer, screen);
+
+        lv_obj_t * top = lv_cont_create(screen.get(), nullptr);
+        lv_obj_set_height(top, 120);
+        lv_cont_set_fit2(top, LV_FIT_FILL, LV_FIT_NONE);
+        lv_cont_set_layout(top, LV_LAYOUT_ROW_M);
+        lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen.style());
+        (void) top;
+
+        lv_obj_t * pages = lv_cont_create(screen.get(), nullptr);
+        lv_cont_set_fit2(pages, LV_FIT_FILL, LV_FIT_FILL);
+        lv_cont_set_layout(pages, LV_LAYOUT_GRID);
+        lv_cont_set_style(pages, LV_CONT_STYLE_MAIN, screen.style());
+        (void) pages;
+
+        /* draw_components(app["components"], top); */
+        /* draw_pages(app["pages"], pages); */
+
         return gui.loop();
     }
     catch (json::exception& e)
