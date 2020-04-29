@@ -572,7 +572,25 @@ static void background_event_cb(lv_obj_t * obj, lv_event_t event)
     if(event == LV_EVENT_RELEASED)
     {
         const auto & o = *static_cast<const json *>(obj->user_data);
-        const auto & c = o["target_background"].get_ref<const std::string&>();
-        linfo("event target=background value=%s", c.c_str());
+        const auto & c = o["target_background"];
+        const auto & dsc = c.get_ref<const std::string &>();
+        linfo("event target=background value=%s", dsc.c_str());
+
+        /* FIXME: DRY, need a proper way of handling color styles. */
+        switch (c.get<Color>())
+        {
+            case RED:
+                screen_style->body.main_color = LV_COLOR_RED;
+                screen_style->body.grad_color = LV_COLOR_RED;
+                break;
+            case BLUE:
+                screen_style->body.main_color = LV_COLOR_BLUE;
+                screen_style->body.grad_color = LV_COLOR_BLUE;
+                break;
+            default:
+                lwarn("object background not handled id=%s", "unknown");
+                break;
+        }
+        lv_obj_report_style_mod(screen_style);
     }
 }
