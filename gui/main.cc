@@ -19,6 +19,10 @@ static const json * localized;
 static lv_style_t red_style;
 static lv_style_t blue_style;
 
+static void page_event_cb(lv_obj_t * obj, lv_event_t event);
+static void language_event_cb(lv_obj_t * obj, lv_event_t event);
+static void background_event_cb(lv_obj_t * obj, lv_event_t event);
+
 static const auto& data = R"({
     "app": {
         "width": 800,
@@ -328,6 +332,15 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         lv_label_set_text(lbl, value.c_str());
     }
 
+    obj->user_data = (void *) (&o);
+
+    if (o.contains("target_page"))
+        lv_obj_set_event_cb(obj, page_event_cb);
+    if (o.contains("target_language"))
+        lv_obj_set_event_cb(obj, language_event_cb);
+    if (o.contains("target_background"))
+        lv_obj_set_event_cb(obj, background_event_cb);
+
     return obj;
 }
 
@@ -467,5 +480,76 @@ int main(int argc, const char ** argv)
     {
         lerror("json exception id=%d message=%s", e.id, e.what());
         return 1;
+    }
+}
+
+static bool lv_obj_has_type(lv_obj_t * obj, const char * type)
+{
+    lv_obj_type_t types;
+    lv_obj_get_type(obj, &types);
+    for (int i = 0; i < LV_MAX_ANCESTOR_NUM; i++)
+    {
+        if(!types.type[i])
+            break;
+        else if(std::strcmp(types.type[i], type) == 0)
+            return true;
+    }
+    return false;
+}
+
+static lv_obj_t * lv_obj_get_parent_by_type(lv_obj_t * obj, const char * type)
+{
+    lv_obj_t * parent = obj;
+    while ((parent = lv_obj_get_parent(parent)))
+    {
+        if(lv_obj_has_type(parent, type))
+            return parent;
+    }
+    return nullptr;
+}
+
+static void page_event_cb(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_RELEASED)
+    {
+        lv_obj_t * tabview = lv_obj_get_parent_by_type(obj, "lv_tabview");
+        assertm(tabview, "tabview parent not found");
+
+        lv_tabview_ext_t * ext =
+            static_cast<lv_tabview_ext_t *> (lv_obj_get_ext_attr(tabview));
+        unsigned count = ext->tab_cnt;
+        const char ** names = ext->tab_name_ptr;
+
+        const auto & o = *static_cast<const json *>(obj->user_data);
+        const auto & p = o["target_page"].get_ref<const std::string &>();
+
+        for(unsigned i = 0; i < count; i++)
+        {
+            if (std::strncmp(names[i], p.c_str(), p.size()) != 0)
+            {
+                linfo("event target=page value=%s", names[i]);
+                lv_tabview_set_tab_act(tabview, i - 1, LV_ANIM_OFF);
+            }
+        }
+    }
+}
+
+static void language_event_cb(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_RELEASED)
+    {
+        const auto & o = *static_cast<const json *>(obj->user_data);
+        const auto & l = o["target_language"].get_ref<const std::string&>();
+        linfo("event target=language value=%s", l.c_str());
+    }
+}
+
+static void background_event_cb(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_RELEASED)
+    {
+        const auto & o = *static_cast<const json *>(obj->user_data);
+        const auto & c = o["target_background"].get_ref<const std::string&>();
+        linfo("event target=background value=%s", c.c_str());
     }
 }
