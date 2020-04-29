@@ -45,7 +45,7 @@ OBJDIR := obj
 OPT ?= -Og
 DEBUG ?= -g3
 CSTD ?= -std=c99
-CXXSTD ?= -std=c++11
+CXXSTD ?= -std=c++14
 
 # Include default directories.
 INCLUDES = -I. -I$(BASE) -I$(OBJDIR)
