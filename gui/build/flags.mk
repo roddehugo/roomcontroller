@@ -24,11 +24,11 @@ CFLAGS += -fno-common # Emit duplicate symbol warning at link time.
 # C++ flags.
 CXXFLAGS += $(CFLAGS)
 CXXFLAGS += -Weffc++ # Warn about violations of the Scott Meyers's guidelines.
-CXXFLAGS += -fno-exceptions # Disable C++ exceptions. Most of the std namespace
+# CXXFLAGS += -fno-exceptions # Disable C++ exceptions. Most of the std namespace
 # is off-limits, including STL containers, except <algorithm>, which is mostly OK.
-CXXFLAGS += -fno-rtti # Disable generation of information about every class with
+# CXXFLAGS += -fno-rtti # Disable generation of information about every class with
 # virtual functions for use by the C++ run-time type identification features.
-CXXFLAGS += -fno-threadsafe-statics # Do not emit the extra code to use the
+# CXXFLAGS += -fno-threadsafe-statics # Do not emit the extra code to use the
 # routines specified in the C++ ABI for thread-safe initialization of local statics.
 
 # C & C++ preprocessor flags.

@@ -133,22 +133,30 @@ int main(int argc, const char ** argv)
     lv_log_register_print_cb(&Logger::log);
     lv_init();
 
-    json j = json::parse(data);
-    const auto& app = j["app"];
-    int width = app["width"];
-    assertm(width <= LV_HOR_RES_MAX, "width is greater than LV_HOR_RES_MAX");
-    int height = app["height"];
-    assertm(height <= LV_VER_RES_MAX, "height is greater than LV_VER_RES_MAX");
-    linfo("app width=%3d, height=%3d", width, height);
+    try
+    {
+        json j = json::parse(data);
+        const auto& app = j["app"];
+        int width = app["width"];
+        assert(width <= LV_HOR_RES_MAX);
+        int height = app["height"];
+        assert(height <= LV_VER_RES_MAX);
+        linfo("app width=%3d height=%3d", width, height);
 
-    const auto& components = app["components"];
-    linfo("components size=%lu", components.size());
+        const auto& components = app["components"];
+        linfo("components size=%lu", components.size());
 
-    SdlDisplay display(width, height);
-    SdlPointer pointer;
+        SdlDisplay display(width, height);
+        SdlPointer pointer;
 
-    gui::Screen screen;
+        gui::Screen screen;
 
-    Gui gui(display, pointer);
-    return gui.loop();
+        Gui gui(display, pointer);
+        return gui.loop();
+    }
+    catch (json::exception& e)
+    {
+        lerror("json exception id=%d message=%s", e.id, e.what());
+        return 1;
+    }
 }
