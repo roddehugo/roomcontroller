@@ -1,4 +1,5 @@
 #include "gui.hh"
+#include "logger.hh"
 #include "lvgl/lvgl.h"
 
 #include <fstream>
@@ -9,12 +10,14 @@
 
 int main(int argc, const char ** argv)
 {
+    lv_log_register_print_cb(&Logger::log);
     lv_init();
 
     int width = LV_HOR_RES;
     assertm(width <= LV_HOR_RES_MAX, "width is greater than LV_HOR_RES_MAX");
     int height = LV_VER_RES;
     assertm(height <= LV_VER_RES_MAX, "height is greater than LV_VER_RES_MAX");
+    linfo("app width=%3d, height=%3d", width, height);
 
     SdlDisplay display(width, height);
     SdlPointer pointer;
