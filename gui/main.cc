@@ -6,23 +6,29 @@
 #include <iostream>
 #include <string>
 
+/* FIXME: use a dedicated source file. */
 #include <cassert>
 #define assertm(exp, msg) assert(((void)msg, exp))
 
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
+/* FIXME: need a File System to retrieve binary data from image files. */
 LV_IMG_DECLARE(logo);
 
+/* FIXME: cheap global for easier access, replace with better OOP. */
 static const json * localized;
 
+/* FIXME: need to find a proper way to handle on the fly styles. */
 static lv_style_t red_style;
 static lv_style_t blue_style;
 
+/* FIXME: use more appropriate wrapper around objects. */
 static void page_event_cb(lv_obj_t * obj, lv_event_t event);
 static void language_event_cb(lv_obj_t * obj, lv_event_t event);
 static void background_event_cb(lv_obj_t * obj, lv_event_t event);
 
+/* FIXME: store this in plain json file once mostly done with prototyping. */
 static const auto& data = R"({
     "app": {
         "width": 800,
@@ -304,7 +310,10 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         obj = lv_btn_create(parent, nullptr);
 
     obj = draw_object<OBJECT>(o, parent, obj);
+    /* FIXME: without tight fitting, everything goes wild in top container. */
+    lv_btn_set_fit2(obj, LV_FIT_TIGHT, LV_FIT_TIGHT);
 
+    /* FIXME: DRY, need a proper way of handling btn styles. */
     if (o.contains("background_color"))
     {
         const auto color = o["background_color"].get<Color>();
@@ -332,6 +341,7 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         lv_label_set_text(lbl, value.c_str());
     }
 
+    /* FIXME: user_data is void *, a better user data would be a C++ object. */
     obj->user_data = (void *) (&o);
 
     if (o.contains("target_page"))
@@ -369,6 +379,8 @@ static void draw_component(const json & c, lv_obj_t * parent)
     linfo("component id=%s type=%u", id.c_str(), type);
 
     const auto& properties = c["properties"];
+    /* FIXME: template deduction cannot happen at runtime.
+     * Use inheritance with some kind of factory method design pattern. */
     switch (type)
     {
         case OBJECT:
@@ -453,7 +465,8 @@ int main(int argc, const char ** argv)
 
         lv_obj_set_auto_realign(top, true);
         lv_cont_set_fit2(top, LV_FIT_FLOOD, LV_FIT_TIGHT);
-        lv_cont_set_layout(top, LV_LAYOUT_ROW_M);
+        /* FIXME: with layout, pos properties are not taken into account. */
+        /* lv_cont_set_layout(top, LV_LAYOUT_ROW_M); */
         lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen.style());
         describe("top after layout", top);
 
@@ -478,6 +491,7 @@ int main(int argc, const char ** argv)
     }
     catch (json::exception& e)
     {
+        /* FIXME: without exception handling, program aborts abruptly. */
         lerror("json exception id=%d message=%s", e.id, e.what());
         return 1;
     }
@@ -512,6 +526,7 @@ static void page_event_cb(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_RELEASED)
     {
+        /* FIXME: a better approach? Will assert if parent is not pages. */
         lv_obj_t * tabview = lv_obj_get_parent_by_type(obj, "lv_tabview");
         assertm(tabview, "tabview parent not found");
 
