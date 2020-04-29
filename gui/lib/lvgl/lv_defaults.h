@@ -1,6 +1,8 @@
 #ifndef LV_DEFAULTS_H
 #define LV_DEFAULTS_H
 
+/* clang-format off */
+
 /*===============
  * Feature usage
  *===============*/

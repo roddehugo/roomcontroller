@@ -1,6 +1,8 @@
 #ifndef LV_DRV_DEFAULTS_H
 #define LV_DRV_DEFAULTS_H
 
+/* clang-format off */
+
 /*=================
  * Drivers
  *=================*/
