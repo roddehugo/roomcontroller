@@ -176,9 +176,9 @@ static const auto& data = R"({
             "SWITCH_TO_FRENCH": "FR",
             "SWITCH_TO_ENGLISH": "EN",
             "I_AM_PAGE_A": "Je suis la page A",
-            "GO_TO_PAGE_A": "Aller à la page A",
+            "GO_TO_PAGE_A": "Aller a la page A",
             "I_AM_PAGE_B": "Je suis la page B",
-            "GO_TO_PAGE_B": "Aller à la page B"
+            "GO_TO_PAGE_B": "Aller a la page B"
         }
     }
 })";
