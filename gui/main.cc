@@ -14,6 +14,9 @@ using json = nlohmann::json;
 
 LV_IMG_DECLARE(logo);
 
+static lv_style_t red_style;
+static lv_style_t blue_style;
+
 static const auto& data = R"({
     "app": {
         "width": 800,
@@ -46,8 +49,8 @@ static const auto& data = R"({
                     "x": 310,
                     "y": 5,
                     "text": "BLUE",
-                    "target_background": "blue",
-                    "background_color": 255
+                    "background_color": "blue",
+                    "target_background": "blue"
                 }
             },
             {
@@ -57,8 +60,8 @@ static const auto& data = R"({
                     "x": 400,
                     "y": 5,
                     "text": "RED",
-                    "target_background": "red",
-                    "background_color": 16711680
+                    "background_color": "red",
+                    "target_background": "red"
                 }
             },
             {
@@ -156,6 +159,20 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentType,
     {IMAGE, "image"},
 })
 
+enum Color
+{
+    DEFAULT,
+    RED,
+    BLUE,
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(Color,
+{
+    {DEFAULT, "default"},
+    {RED, "red"},
+    {BLUE, "blue"},
+})
+
 static void describe(const char * who, const lv_obj_t * obj)
 {
     ltrace("%s pos=(%d,%d) size=(%d,%d)", who,
@@ -202,6 +219,24 @@ lv_obj_t * draw_object<OBJECT>(const json & o,
                 o["height"].get<int>(), lv_obj_get_height(obj));
     }
 
+    if (o.contains("background_color"))
+    {
+        const auto color = o["background_color"].get<Color>();
+        switch (color)
+        {
+            case RED:
+                lv_obj_set_style(obj, &red_style);
+                break;
+            case BLUE:
+                lv_obj_set_style(obj, &blue_style);
+                break;
+            default:
+                lwarn("object background not handled id=%s", "unknown");
+                break;
+        }
+        ltrace("object background color=%u", color);
+    }
+
     describe("object", obj);
     return obj;
 }
@@ -238,6 +273,24 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         obj = lv_btn_create(parent, nullptr);
 
     obj = draw_object<OBJECT>(o, parent, obj);
+
+    if (o.contains("background_color"))
+    {
+        const auto color = o["background_color"].get<Color>();
+        switch (color)
+        {
+            case RED:
+                lv_btn_set_style(obj, LV_BTN_STYLE_REL, &red_style);
+                break;
+            case BLUE:
+                lv_btn_set_style(obj, LV_BTN_STYLE_REL, &blue_style);
+                break;
+            default:
+                lwarn("object background not handled id=%s", "unknown");
+                break;
+        }
+        ltrace("object background color=%u", color);
+    }
 
     if (o.contains("text"))
     {
@@ -339,6 +392,14 @@ int main(int argc, const char ** argv)
         gui::Screen screen;
 
         Gui gui(display, pointer, screen);
+
+        auto * theme = lv_theme_get_current();
+        lv_style_copy(&red_style, theme->style.btn.rel);
+        red_style.body.main_color = LV_COLOR_RED;
+        red_style.body.grad_color = LV_COLOR_RED;
+        lv_style_copy(&blue_style, theme->style.btn.rel);
+        blue_style.body.main_color = LV_COLOR_BLUE;
+        blue_style.body.grad_color = LV_COLOR_BLUE;
 
         lv_obj_t * top = lv_cont_create(screen.get(), nullptr);
         describe("top after creation", top);
