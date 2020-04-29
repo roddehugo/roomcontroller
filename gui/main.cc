@@ -12,6 +12,8 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
+LV_IMG_DECLARE(logo);
+
 static const auto& data = R"({
     "app": {
         "width": 800,
@@ -19,6 +21,15 @@ static const auto& data = R"({
         "language": "en",
         "page": "page_a",
         "components": [
+            {
+                "id": "logo",
+                "type": "image",
+                "properties": {
+                    "x": 5,
+                    "y": 5,
+                    "source": "logo"
+                }
+            },
             {
                 "id": "edit",
                 "type": "button",
@@ -134,6 +145,7 @@ enum ComponentType
     OBJECT,
     BUTTON,
     LABEL,
+    IMAGE,
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(ComponentType,
@@ -141,6 +153,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentType,
     {OBJECT, "object"},
     {BUTTON, "button"},
     {LABEL, "label"},
+    {IMAGE, "image"},
 })
 
 static void describe(const char * who, const lv_obj_t * obj)
@@ -236,6 +249,24 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
     return obj;
 }
 
+template <>
+lv_obj_t * draw_object<IMAGE>(const json & o,
+        lv_obj_t * parent, lv_obj_t * obj)
+{
+    if (!obj)
+        obj = lv_img_create(parent, nullptr);
+
+    obj = draw_object<OBJECT>(o, parent, obj);
+
+    if (o.contains("source"))
+    {
+        lv_img_set_src(obj, &logo);
+        lv_img_set_auto_size(obj, true);
+    }
+
+    return obj;
+}
+
 static void draw_component(const json & c, lv_obj_t * parent)
 {
     const auto & id = c["id"].get_ref<const std::string&>();
@@ -254,11 +285,13 @@ static void draw_component(const json & c, lv_obj_t * parent)
         case LABEL:
             draw_object<LABEL>(properties, parent);
             break;
+        case IMAGE:
+            draw_object<IMAGE>(properties, parent);
+            break;
         default:
             lwarn("component type not handled id=%s", id.c_str());
             break;
     }
-
 }
 
 static void draw_components(const json & components, lv_obj_t * parent)
