@@ -19,6 +19,8 @@ int main(int argc, const char ** argv)
     SdlDisplay display(width, height);
     SdlPointer pointer;
 
+    gui::Screen screen;
+
     Gui gui(display, pointer);
     return gui.loop();
 }
