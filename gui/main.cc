@@ -304,10 +304,11 @@ static void draw_components(const json & components, lv_obj_t * parent)
 static void draw_page(const json & p, lv_obj_t * parent)
 {
     const auto & id = p["id"].get_ref<const std::string &>();
+    lv_obj_t * page = lv_tabview_add_tab(parent, id.c_str());
     linfo("page id=%s", id.c_str());
 
     const auto & components = p["components"];
-    draw_components(components, parent);
+    draw_components(components, page);
 }
 
 static void draw_pages(const json & pages, lv_obj_t * parent)
@@ -340,20 +341,30 @@ int main(int argc, const char ** argv)
         Gui gui(display, pointer, screen);
 
         lv_obj_t * top = lv_cont_create(screen.get(), nullptr);
-        lv_obj_set_height(top, 120);
-        lv_cont_set_fit2(top, LV_FIT_FILL, LV_FIT_NONE);
+        describe("top after creation", top);
+
+        lv_obj_set_auto_realign(top, true);
+        lv_cont_set_fit2(top, LV_FIT_FLOOD, LV_FIT_TIGHT);
         lv_cont_set_layout(top, LV_LAYOUT_ROW_M);
         lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen.style());
-        (void) top;
+        describe("top after layout", top);
 
-        lv_obj_t * pages = lv_cont_create(screen.get(), nullptr);
-        lv_cont_set_fit2(pages, LV_FIT_FILL, LV_FIT_FILL);
-        lv_cont_set_layout(pages, LV_LAYOUT_GRID);
-        lv_cont_set_style(pages, LV_CONT_STYLE_MAIN, screen.style());
-        (void) pages;
+        draw_components(app["components"], top);
+        describe("top after components", top);
 
-        /* draw_components(app["components"], top); */
-        /* draw_pages(app["pages"], pages); */
+        lv_obj_t * pages = lv_tabview_create(screen.get(), nullptr);
+        describe("pages after creation", pages);
+
+        lv_tabview_set_sliding(pages, false);
+        lv_tabview_set_btns_hidden(pages, true);
+        lv_tabview_set_style(pages, LV_TABVIEW_STYLE_BG, screen.style());
+        int p = screen.style()->body.padding.inner;
+        lv_obj_set_auto_realign(pages, true);
+        lv_obj_set_height(pages, height - lv_obj_get_height(top) - p * 3);
+        describe("pages after components", pages);
+
+        draw_pages(app["pages"], pages);
+        describe("pages after components", pages);
 
         return gui.loop();
     }
