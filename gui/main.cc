@@ -28,7 +28,47 @@ static lv_style_t * screen_style;
 static lv_style_t red_style;
 static lv_style_t blue_style;
 
-/* FIXME: use more appropriate wrapper around objects. */
+/* FIXME: use more appropriate wrapper around objects.
+ * Use lv_obj_allocate_ext_attr with user defined extended data. This brings
+ * some of the OO paradigms to C structs, see well documented article in blog:
+ * https://blog.littlevgl.com/2018-12-13/extend-lvgl-objects
+ *
+ * // Example extended data of an ancestor.
+ * typedef struct {
+ *   int value1;
+ *   int value2;
+ * } ancestor_t;
+ *
+ * // Example extended data of a derived object.
+ * typedef struct {
+ *   ancestor_t ancestor;      // Include the ancestors extend data first.
+ *   char * text;              // Add new data afterwards.
+ * } derived_t;
+ *
+ * // Then, re-allocate extended data.
+ * lv_obj_allocate_ext_attr(obj, sizeof(derived_t));
+ * // And use it somewhere else, in callbacks for instance.
+ * derived_t * ext = lv_obj_get_ext_attr(obj);
+ *
+ * TODO: one can use the extended data type to store application data. The big
+ * advantage is that memory management is left to the library and the linked
+ * list of objects. There is no *risk* of us mis-manipulating wrappers.
+ * TODO: evaluate the pros/cons of doing C++ wrapping around lvgl objects (how
+ * to deal with the memory management if C++ objects are higher-level
+ * representations of lvgl objects (e.g. a GuiLabel would combine lv_cont with a
+ * lv_lavel inside for better positioning).
+ * Here are the options:
+ * - create our own LinkedList of children and parents with C++; this should be
+ *   feasible with signal callbacks to properly manage memory. But this will
+ *   require a lot of verbosity to just wrap functions and bind application data
+ *   with lvgl objects, events and signals. By storing a pointer to the C++
+ *   object in the lv_obj_t struct as user_data, callbacks would be static but
+ *   object instances can be de-referenced back (e.g. Sdl{Pointer,Display}).
+ * - store application user data in object's extended data with custom types and
+ *   write everything in plain C, or Orthodox C++, a minimal C++ subset of good
+ *   and easy to apprehend features, no STL at all, only libc.
+ * */
+static void edit_event_cb(lv_obj_t * obj, lv_event_t event);
 static void page_event_cb(lv_obj_t * obj, lv_event_t event);
 static void language_event_cb(lv_obj_t * obj, lv_event_t event);
 static void background_event_cb(lv_obj_t * obj, lv_event_t event);
@@ -56,7 +96,9 @@ static const auto& data = R"({
                 "properties": {
                     "x": 120,
                     "y": 5,
-                    "text": "EDIT"
+                    "text": "EDIT",
+                    "toggle": true,
+                    "target_edit": true
                 }
             },
             {
@@ -306,7 +348,8 @@ lv_obj_t * draw_object<LABEL>(const json & o,
         lv_label_set_static_text(lbl, value.c_str());
         lv_label_set_align(lbl, LV_LABEL_ALIGN_CENTER);
 
-        /* FIXME: user_data is void *, a better user data would be a C++ object. */
+        /* FIXME: user_data is void, a better user data would be a C++ object.
+         * Or actually use extended data attribute in lv_obj_t! */
         lbl->user_data = (void *) (key.c_str());
     }
 
@@ -344,6 +387,12 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         }
     }
 
+    if (o.contains("toggle"))
+    {
+        bool toggle = o["toggle"].get<bool>();
+        lv_btn_set_toggle(obj, toggle);
+    }
+
     if (o.contains("text"))
     {
         assertm(language, "no language pointer");
@@ -354,13 +403,17 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         lv_obj_t * lbl = lv_label_create(obj, nullptr);
         lv_label_set_static_text(lbl, value.c_str());
 
-        /* FIXME: user_data is void *, a better user data would be a C++ object. */
+        /* FIXME: user_data is void, a better user data would be a C++ object.
+         * Or actually use extended data attribute in lv_obj_t! */
         lbl->user_data = (void *) (key.c_str());
     }
 
-    /* FIXME: user_data is void *, a better user data would be a C++ object. */
+    /* FIXME: user_data is void, a better user data would be a C++ object.
+     * Or actually use extended data attribute in lv_obj_t! */
     obj->user_data = (void *) (&o);
 
+    if (o.contains("target_edit"))
+        lv_obj_set_event_cb(obj, edit_event_cb);
     if (o.contains("target_page"))
         lv_obj_set_event_cb(obj, page_event_cb);
     if (o.contains("target_language"))
@@ -549,6 +602,25 @@ static lv_obj_t * lv_obj_get_parent_by_type(lv_obj_t * obj, const char * type)
     return nullptr;
 }
 
+static void edit_event_cb(lv_obj_t * obj, lv_event_t event)
+{
+    if (event == LV_EVENT_VALUE_CHANGED)
+    {
+        /* FIXME: lv_event_get_data() with temporary data stored in static void
+         * pointer in lv_obj.c, see lv_event_send_func. Looks a little crappy to
+         * me. Not sure why this is done like this, but I am not a fan at all.
+         * In C++, with strong types, such static casting is then needed. And it
+         * does not really looks good! Watch this API design and investigate why
+         * it has been done like this. Ok it brings generic event handling with
+         * a single lv_event_cb_t.
+         * Ok, according to [documentation](overview/event.html#custom-data),
+         * this is expected. */
+        assertm(lv_obj_has_type(obj, "lv_btn"), "object is not a button");
+        const bool state = *static_cast<const uint32_t*>(lv_event_get_data());
+        linfo("edit event=value-changed state=%s", state ? "true" : "false");
+    }
+}
+
 static void page_event_cb(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_CLICKED)
@@ -617,9 +689,8 @@ static void language_event_cb(lv_obj_t * obj, lv_event_t event)
             lv_disp_t * d = nullptr;
             while((d = lv_disp_get_next(d)))
             {
-
-                /* FIXME: might cost a lot if GUI has deep child nesting.
-                 * For each screen, and children recursively, depth first. */
+                /* FIXME: might cost a lot if GUI has deep child nesting. */
+                /* For each screen, and children recursively, depth first. */
                 update_label_text_recursive(&d->scr_ll);
             }
         }
