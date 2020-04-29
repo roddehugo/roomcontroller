@@ -17,7 +17,8 @@ using json = nlohmann::json;
 LV_IMG_DECLARE(logo);
 
 /* FIXME: cheap global for easier access, replace with better OOP. */
-static const json * localized;
+static const json * translations;
+static const json::string_t * language;
 
 /* FIXME: only use screen as background color style with transparent containers
  * on top to avoid such a global. */
@@ -296,12 +297,17 @@ lv_obj_t * draw_object<LABEL>(const json & o,
 
     if (o.contains("text"))
     {
-        assertm(localized, "no localized data pointer");
-        const auto & key = o["text"].get_ref<const std::string&>();
-        const auto & value = localized->at(key).get_ref<const std::string&>();
+        assertm(language, "no language pointer");
+        assertm(translations, "no translations data pointer");
+        const auto & localized = translations->at(*language);
+        const auto & key = o["text"].get_ref<const std::string &>();
+        const auto & value = localized[key].get_ref<const std::string &>();
         lv_obj_t * lbl = lv_label_create(obj, nullptr);
-        lv_label_set_text(lbl, value.c_str());
+        lv_label_set_static_text(lbl, value.c_str());
         lv_label_set_align(lbl, LV_LABEL_ALIGN_CENTER);
+
+        /* FIXME: user_data is void *, a better user data would be a C++ object. */
+        lbl->user_data = (void *) (key.c_str());
     }
 
     return obj;
@@ -340,11 +346,16 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
 
     if (o.contains("text"))
     {
-        assertm(localized, "no localized data pointer");
-        const auto & key = o["text"].get_ref<const std::string&>();
-        const auto & value = localized->at(key).get_ref<const std::string&>();
+        assertm(language, "no language pointer");
+        assertm(translations, "no translations data pointer");
+        const auto & localized = translations->at(*language);
+        const auto & key = o["text"].get_ref<const std::string &>();
+        const auto & value = localized[key].get_ref<const std::string &>();
         lv_obj_t * lbl = lv_label_create(obj, nullptr);
-        lv_label_set_text(lbl, value.c_str());
+        lv_label_set_static_text(lbl, value.c_str());
+
+        /* FIXME: user_data is void *, a better user data would be a C++ object. */
+        lbl->user_data = (void *) (key.c_str());
     }
 
     /* FIXME: user_data is void *, a better user data would be a C++ object. */
@@ -447,10 +458,12 @@ int main(int argc, const char ** argv)
         assert(height <= LV_VER_RES_MAX);
         linfo("app width=%3d height=%3d", width, height);
 
-        const auto & translations = j["translations"];
-        const auto & language = app["language"].get_ref<const std::string&>();
-        localized = &translations[language];
-        linfo("app language=%s size=%lu", language.c_str(), localized->size());
+        language = app["language"].get_ptr<const json::string_t *>();
+        assertm(language, "no language pointer");
+        translations = &j["translations"];
+        assertm(translations, "no translations data pointer");
+        const auto & localized = translations->at(*language);
+        linfo("app language=%s size=%lu", language->c_str(), localized.size());
 
         SdlDisplay display(width, height);
         SdlPointer pointer;
@@ -557,13 +570,53 @@ static void page_event_cb(lv_obj_t * obj, lv_event_t event)
     }
 }
 
+static void update_label_text_recursive(lv_ll_t * ll)
+{
+    lv_obj_t * obj = static_cast<lv_obj_t *>(lv_ll_get_head(ll));
+    while (obj)
+    {
+        update_label_text_recursive(&obj->child_ll);
+
+        if (lv_obj_has_type(obj, "lv_label"))
+        {
+            assertm(language, "no language pointer");
+            assertm(translations, "no translations data pointer");
+            const auto & localized = translations->at(*language);
+            const char * key = (const char *) (obj->user_data);
+            const auto & value = localized[key].get_ref<const std::string &>();
+            lv_label_set_static_text(obj, value.c_str());
+        }
+
+        obj = static_cast<lv_obj_t *>(lv_ll_get_next(ll, obj));
+    }
+}
+
 static void language_event_cb(lv_obj_t * obj, lv_event_t event)
 {
     if(event == LV_EVENT_RELEASED)
     {
         const auto & o = *static_cast<const json *>(obj->user_data);
-        const auto & l = o["target_language"].get_ref<const std::string&>();
-        linfo("event target=language value=%s", l.c_str());
+        const auto & l = o["target_language"].get_ref<const std::string &>();
+        assertm(language, "no language pointer");
+        if (language->compare(l) != 0)
+        {
+            language = &l;
+            assertm(translations, "no translations data pointer");
+            const auto & localized = translations->at(*language);
+            linfo("event target=language value=%s size=%lu",
+                    language->c_str(), localized.size());
+            /* std::cout << std::setw(2) << localized << std::endl; */
+
+            /* For each display. */
+            lv_disp_t * d = nullptr;
+            while((d = lv_disp_get_next(d)))
+            {
+
+                /* FIXME: might cost a lot if GUI has deep child nesting.
+                 * For each screen, and children recursively, depth first. */
+                update_label_text_recursive(&d->scr_ll);
+            }
+        }
     }
 }
 
