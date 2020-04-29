@@ -135,11 +135,11 @@ int main(int argc, const char ** argv)
 
     try
     {
-        json j = json::parse(data);
-        const auto& app = j["app"];
-        int width = app["width"];
+        auto j = json::parse(data);
+        const auto & app = j["app"];
+        const auto width = app["width"].get<int>();
         assert(width <= LV_HOR_RES_MAX);
-        int height = app["height"];
+        const auto height = app["height"].get<int>();
         assert(height <= LV_VER_RES_MAX);
         linfo("app width=%3d height=%3d", width, height);
 
