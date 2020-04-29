@@ -551,7 +551,7 @@ static lv_obj_t * lv_obj_get_parent_by_type(lv_obj_t * obj, const char * type)
 
 static void page_event_cb(lv_obj_t * obj, lv_event_t event)
 {
-    if(event == LV_EVENT_RELEASED)
+    if(event == LV_EVENT_CLICKED)
     {
         /* FIXME: a better approach? Will assert if parent is not pages. */
         lv_obj_t * tabview = lv_obj_get_parent_by_type(obj, "lv_tabview");
@@ -599,7 +599,7 @@ static void update_label_text_recursive(lv_ll_t * ll)
 
 static void language_event_cb(lv_obj_t * obj, lv_event_t event)
 {
-    if(event == LV_EVENT_RELEASED)
+    if(event == LV_EVENT_CLICKED)
     {
         const auto & o = *static_cast<const json *>(obj->user_data);
         const auto & l = o["target_language"].get_ref<const std::string &>();
@@ -628,7 +628,7 @@ static void language_event_cb(lv_obj_t * obj, lv_event_t event)
 
 static void background_event_cb(lv_obj_t * obj, lv_event_t event)
 {
-    if(event == LV_EVENT_RELEASED)
+    if(event == LV_EVENT_CLICKED)
     {
         const auto & o = *static_cast<const json *>(obj->user_data);
         const auto & c = o["target_background"];
