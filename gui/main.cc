@@ -14,6 +14,8 @@ using json = nlohmann::json;
 
 LV_IMG_DECLARE(logo);
 
+static const json * localized;
+
 static lv_style_t red_style;
 static lv_style_t blue_style;
 
@@ -140,7 +142,30 @@ static const auto& data = R"({
             }
         ]
     },
-    "translations": {}
+    "translations": {
+        "en": {
+            "EDIT": "Edit",
+            "RED": "Red",
+            "BLUE": "Blue",
+            "SWITCH_TO_FRENCH": "FR",
+            "SWITCH_TO_ENGLISH": "EN",
+            "I_AM_PAGE_A": "I am page A",
+            "GO_TO_PAGE_A": "Go to page A",
+            "I_AM_PAGE_B": "I am page B",
+            "GO_TO_PAGE_B": "Go to page B"
+        },
+        "fr": {
+            "EDIT": "Editer",
+            "RED": "Rouge",
+            "BLUE": "Bleu",
+            "SWITCH_TO_FRENCH": "FR",
+            "SWITCH_TO_ENGLISH": "EN",
+            "I_AM_PAGE_A": "Je suis la page A",
+            "GO_TO_PAGE_A": "Aller à la page A",
+            "I_AM_PAGE_B": "Je suis la page B",
+            "GO_TO_PAGE_B": "Aller à la page B"
+        }
+    }
 })";
 
 enum ComponentType
@@ -256,9 +281,11 @@ lv_obj_t * draw_object<LABEL>(const json & o,
 
     if (o.contains("text"))
     {
+        assertm(localized, "no localized data pointer");
         const auto & key = o["text"].get_ref<const std::string&>();
+        const auto & value = localized->at(key).get_ref<const std::string&>();
         lv_obj_t * lbl = lv_label_create(obj, nullptr);
-        lv_label_set_text(lbl, key.c_str());
+        lv_label_set_text(lbl, value.c_str());
         lv_label_set_align(lbl, LV_LABEL_ALIGN_CENTER);
     }
 
@@ -294,9 +321,11 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
 
     if (o.contains("text"))
     {
+        assertm(localized, "no localized data pointer");
         const auto & key = o["text"].get_ref<const std::string&>();
+        const auto & value = localized->at(key).get_ref<const std::string&>();
         lv_obj_t * lbl = lv_label_create(obj, nullptr);
-        lv_label_set_text(lbl, key.c_str());
+        lv_label_set_text(lbl, value.c_str());
     }
 
     return obj;
@@ -385,6 +414,11 @@ int main(int argc, const char ** argv)
         const auto height = app["height"].get<int>();
         assert(height <= LV_VER_RES_MAX);
         linfo("app width=%3d height=%3d", width, height);
+
+        const auto & translations = j["translations"];
+        const auto & language = app["language"].get_ref<const std::string&>();
+        localized = &translations[language];
+        linfo("app language=%s size=%lu", language.c_str(), localized->size());
 
         SdlDisplay display(width, height);
         SdlPointer pointer;
