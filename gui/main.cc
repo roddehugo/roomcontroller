@@ -256,8 +256,10 @@ lv_obj_t * draw_object<OBJECT>(const json & o,
 
     if (o.contains("background_color"))
     {
-        const auto color = o["background_color"].get<Color>();
-        switch (color)
+        const auto & c = o["background_color"];
+        const auto & dsc = c.get_ref<const std::string &>();
+        ltrace("object background color=%s", dsc.c_str());
+        switch (c.get<Color>())
         {
             case RED:
                 lv_obj_set_style(obj, &red_style);
@@ -269,7 +271,6 @@ lv_obj_t * draw_object<OBJECT>(const json & o,
                 lwarn("object background not handled id=%s", "unknown");
                 break;
         }
-        ltrace("object background color=%u", color);
     }
 
     describe("object", obj);
@@ -316,8 +317,10 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
     /* FIXME: DRY, need a proper way of handling btn styles. */
     if (o.contains("background_color"))
     {
-        const auto color = o["background_color"].get<Color>();
-        switch (color)
+        const auto & c = o["background_color"];
+        const auto & dsc = c.get_ref<const std::string &>();
+        ltrace("object background color=%s", dsc.c_str());
+        switch (c.get<Color>())
         {
             case RED:
                 lv_btn_set_style(obj, LV_BTN_STYLE_REL, &red_style);
@@ -329,7 +332,6 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
                 lwarn("object background not handled id=%s", "unknown");
                 break;
         }
-        ltrace("object background color=%u", color);
     }
 
     if (o.contains("text"))
@@ -374,14 +376,15 @@ lv_obj_t * draw_object<IMAGE>(const json & o,
 
 static void draw_component(const json & c, lv_obj_t * parent)
 {
-    const auto & id = c["id"].get_ref<const std::string&>();
-    const auto type = c["type"].get<ComponentType>();
-    linfo("component id=%s type=%u", id.c_str(), type);
+    const auto & id = c["id"].get_ref<const std::string &>();
+    const auto & type = c["type"];
+    const auto & dsc = type.get_ref<const std::string &>();
+    linfo("component id=%s type=%s", id.c_str(), dsc.c_str());
 
     const auto& properties = c["properties"];
     /* FIXME: template deduction cannot happen at runtime.
      * Use inheritance with some kind of factory method design pattern. */
-    switch (type)
+    switch (type.get<ComponentType>())
     {
         case OBJECT:
             draw_object<OBJECT>(properties, parent);
