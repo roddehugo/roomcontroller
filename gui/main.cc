@@ -19,6 +19,10 @@ LV_IMG_DECLARE(logo);
 /* FIXME: cheap global for easier access, replace with better OOP. */
 static const json * localized;
 
+/* FIXME: only use screen as background color style with transparent containers
+ * on top to avoid such a global. */
+static lv_style_t * screen_style;
+
 /* FIXME: need to find a proper way to handle on the fly styles. */
 static lv_style_t red_style;
 static lv_style_t blue_style;
@@ -452,6 +456,7 @@ int main(int argc, const char ** argv)
         SdlPointer pointer;
 
         gui::Screen screen;
+        screen_style = screen.style();
 
         Gui gui(display, pointer, screen);
 
@@ -470,7 +475,7 @@ int main(int argc, const char ** argv)
         lv_cont_set_fit2(top, LV_FIT_FLOOD, LV_FIT_TIGHT);
         /* FIXME: with layout, pos properties are not taken into account. */
         /* lv_cont_set_layout(top, LV_LAYOUT_ROW_M); */
-        lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen.style());
+        lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen_style);
         describe("top after layout", top);
 
         draw_components(app["components"], top);
@@ -481,7 +486,7 @@ int main(int argc, const char ** argv)
 
         lv_tabview_set_sliding(pages, false);
         lv_tabview_set_btns_hidden(pages, true);
-        lv_tabview_set_style(pages, LV_TABVIEW_STYLE_BG, screen.style());
+        lv_tabview_set_style(pages, LV_TABVIEW_STYLE_BG, screen_style);
         int p = screen.style()->body.padding.inner;
         lv_obj_set_auto_realign(pages, true);
         lv_obj_set_height(pages, height - lv_obj_get_height(top) - p * 3);
