@@ -26,6 +26,10 @@
 #define LV_TICK_CUSTOM_INCLUDE  <SDL.h>
 #define LV_TICK_CUSTOM_SYS_TIME_EXPR SDL_GetTicks ()
 
+/* Use a custom logger.
+ * It allows for printing ANSI colors in terminal, and declutter filenames. */
+#define LV_LOG_PRINTF           0
+
 /*=================
  * User data types
  *=================*/
