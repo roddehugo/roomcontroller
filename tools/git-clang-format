@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+git-clang-format --extensions "h,c,hh,cc,tcc" "${@}"
