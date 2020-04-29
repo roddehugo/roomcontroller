@@ -484,7 +484,8 @@ int main(int argc, const char ** argv)
         lv_obj_t * top = lv_cont_create(screen.get(), nullptr);
         describe("top after creation", top);
 
-        lv_obj_set_auto_realign(top, true);
+        /* TODO: understand when this is needed, and why? */
+        /* lv_obj_set_auto_realign(top, true); */
         lv_cont_set_fit2(top, LV_FIT_FLOOD, LV_FIT_TIGHT);
         /* FIXME: with layout, pos properties are not taken into account. */
         /* lv_cont_set_layout(top, LV_LAYOUT_ROW_M); */
@@ -500,8 +501,13 @@ int main(int argc, const char ** argv)
         lv_tabview_set_sliding(pages, false);
         lv_tabview_set_btns_hidden(pages, true);
         lv_tabview_set_style(pages, LV_TABVIEW_STYLE_BG, screen_style);
+        /* TODO: understand when this is needed, and why? */
+        /* lv_obj_set_auto_realign(pages, true); */
+        /* FIXME: why do I have to compute it by myself? I'd expect the layout
+         * system to handle it for me. It seems like sibling children does not
+         * know each other and does not behave accordingly and in harmony in a
+         * layout. Why? I am missing something? */
         int p = screen.style()->body.padding.inner;
-        lv_obj_set_auto_realign(pages, true);
         lv_obj_set_height(pages, height - lv_obj_get_height(top) - p * 3);
         describe("pages after components", pages);
 
