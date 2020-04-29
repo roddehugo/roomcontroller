@@ -21,3 +21,25 @@ int Gui::loop()
     }
     return 0;
 }
+
+namespace gui
+{
+
+lv_obj_t * Object::get() const
+{
+    return obj_;
+}
+
+lv_obj_t * Object::set(lv_obj_t * o)
+{
+    if (o != nullptr)
+        obj_ = o;
+    return o;
+}
+
+Screen::Screen()
+{
+    obj_ = lv_scr_act();
+}
+
+} // namespace gui
