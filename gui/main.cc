@@ -3,6 +3,7 @@
 #include "lvgl/lvgl.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 
@@ -534,8 +535,15 @@ int main(int argc, const char ** argv)
     sysmon_init();
     std::atexit(sysmon_deinit);
 
-    // Open input file stream.
-    std::ifstream ifdata("gui.json");
+    // Input and output file names.
+    const auto & ifile = "gui-default.json";
+    const auto & ofile = "gui-updated.json";
+
+    // First try to restore previously saved gui.
+    std::ifstream ifdata;
+    ifdata.open(ofile);
+    if (!ifdata.is_open())
+        ifdata.open(ifile);
     assert(ifdata.is_open());
 
     try
@@ -621,7 +629,15 @@ int main(int argc, const char ** argv)
         describe("pages after components", pages);
 
         // Loop until application properly exits.
-        return gui.loop();
+        int ret = gui.loop();
+
+        // Save json data.
+        std::ofstream ofdata(ofile);
+        assert(ofdata.is_open());
+        ofdata << std::setw(4) << j << std::endl;
+
+        // Exit properly.
+        return ret;
     }
     catch (json::exception& e)
     {
