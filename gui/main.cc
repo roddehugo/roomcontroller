@@ -77,6 +77,10 @@ static void page_event_cb(lv_obj_t * obj, lv_event_t event);
 static void language_event_cb(lv_obj_t * obj, lv_event_t event);
 static void background_event_cb(lv_obj_t * obj, lv_event_t event);
 
+/* FIXME: use more appropriate wrapper around objects. */
+static lv_signal_cb_t old_signal_cb;
+static lv_res_t gui_btn_signal_cb(lv_obj_t * btn, lv_signal_t signal, void * p);
+
 enum ComponentType
 {
     OBJECT,
@@ -106,6 +110,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Color,
     {RED, "red"},
     {BLUE, "blue"},
 })
+
+struct gui_btn_ext_t : lv_btn_ext_t
+{
+    bool draggable = false;
+};
 
 static void describe(const char * who, const lv_obj_t * obj)
 {
@@ -215,6 +224,9 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
     if (!obj)
         obj = lv_btn_create(parent, nullptr);
 
+    lv_obj_allocate_ext_attr(obj, sizeof(gui_btn_ext_t));
+    auto & ext = *static_cast<gui_btn_ext_t *>(lv_obj_get_ext_attr(obj));
+
     obj = draw_object<OBJECT>(o, parent, obj);
     /* FIXME: without tight fitting, everything goes wild in top container. */
     lv_btn_set_fit2(obj, LV_FIT_TIGHT, LV_FIT_TIGHT);
@@ -239,9 +251,22 @@ lv_obj_t * draw_object<BUTTON>(const json & o,
         }
     }
 
+    if (o.contains("draggable"))
+    {
+        bool draggable = o["draggable"].get<bool>();
+        ltrace("object mode draggable=%s", draggable ? "true" : "false");
+        ext.draggable = draggable;
+        /* FIXME: somehow it seems the signal callback cannot be stored in the
+         * extended data reallocated. There is a segmentation fault in the new
+         * signal callback when trying to fetch the old_signal_cb from it. */
+        old_signal_cb = lv_obj_get_signal_cb(obj);
+        lv_obj_set_signal_cb(obj, gui_btn_signal_cb);
+    }
+
     if (o.contains("toggle"))
     {
         bool toggle = o["toggle"].get<bool>();
+        ltrace("object mode toggle=%s", toggle ? "true" : "false");
         lv_btn_set_toggle(obj, toggle);
     }
 
@@ -373,10 +398,60 @@ static lv_obj_t * lv_obj_get_parent_by_type(lv_obj_t * obj, const char * type)
     return nullptr;
 }
 
+static lv_res_t gui_btn_signal_cb(lv_obj_t * btn, lv_signal_t signal, void * p)
+{
+    // Include the ancient signal function.
+    auto res = old_signal_cb(btn, signal, p);
+    if (res != LV_RES_OK)
+        return res;
+
+    // Capture coordinates change and drag signals.
+    if (signal == LV_SIGNAL_CORD_CHG)
+    {
+        /* TODO: limit coordinates to the parent area. */
+    }
+    else if (signal == LV_SIGNAL_DRAG_BEGIN)
+    {
+        describe("gui btn drag begin", btn);
+    }
+    else if (signal == LV_SIGNAL_DRAG_END)
+    {
+        // Update json data.
+        auto & o = *static_cast<json *>(btn->user_data);
+        o["x"] = lv_obj_get_x(btn);
+        o["y"] = lv_obj_get_y(btn);
+        describe("gui btn drag end", btn);
+    }
+
+    return res;
+}
+
+static void set_drag_recursive(lv_ll_t * ll, bool state)
+{
+    lv_obj_t * obj = static_cast<lv_obj_t *>(lv_ll_get_head(ll));
+    while (obj)
+    {
+        set_drag_recursive(&obj->child_ll, state);
+
+        /* FIXME: only for buttons for the time being. */
+        if (lv_obj_has_type(obj, "lv_btn"))
+        {
+            auto & ext = *static_cast<gui_btn_ext_t *>(lv_obj_get_ext_attr(obj));
+            if (ext.draggable)
+                lv_obj_set_drag(obj, state);
+        }
+
+        obj = static_cast<lv_obj_t *>(lv_ll_get_next(ll, obj));
+    }
+}
+
 static void edit_event_cb(lv_obj_t * obj, lv_event_t event)
 {
     if (event == LV_EVENT_VALUE_CHANGED)
     {
+        // Make sure it is always on top, if one drags something over it.
+        lv_obj_move_foreground(obj);
+
         /* FIXME: lv_event_get_data() with temporary data stored in static void
          * pointer in lv_obj.c, see lv_event_send_func. Looks a little crappy to
          * me. Not sure why this is done like this, but I am not a fan at all.
@@ -389,6 +464,15 @@ static void edit_event_cb(lv_obj_t * obj, lv_event_t event)
         assertm(lv_obj_has_type(obj, "lv_btn"), "object is not a button");
         const bool state = *static_cast<const uint32_t*>(lv_event_get_data());
         linfo("edit event=value-changed state=%s", state ? "true" : "false");
+
+        /* For each display. */
+        lv_disp_t * d = nullptr;
+        while((d = lv_disp_get_next(d)))
+        {
+            /* FIXME: might cost a lot if GUI has deep child nesting. */
+            /* For each screen, and children recursively, depth first. */
+            set_drag_recursive(&d->scr_ll, state);
+        }
     }
 }
 

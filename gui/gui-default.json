@@ -31,6 +31,7 @@
                 "properties": {
                     "x": 310,
                     "y": 5,
+                    "draggable": true,
                     "text": "BLUE",
                     "background_color": "blue",
                     "target_background": "blue"
@@ -42,6 +43,7 @@
                 "properties": {
                     "x": 400,
                     "y": 5,
+                    "draggable": true,
                     "text": "RED",
                     "background_color": "red",
                     "target_background": "red"
@@ -53,6 +55,7 @@
                 "properties": {
                     "x": 560,
                     "y": 5,
+                    "draggable": true,
                     "text": "SWITCH_TO_FRENCH",
                     "target_language": "fr"
                 }
@@ -63,6 +66,7 @@
                 "properties": {
                     "x": 640,
                     "y": 5,
+                    "draggable": true,
                     "text": "SWITCH_TO_ENGLISH",
                     "target_language": "en"
                 }
@@ -89,6 +93,7 @@
                             "x": 300,
                             "y": 200,
                             "width": 200,
+                            "draggable": true,
                             "text": "GO_TO_PAGE_B",
                             "target_page": "page_b"
                         }
@@ -115,6 +120,7 @@
                             "x": 300,
                             "y": 200,
                             "width": 200,
+                            "draggable": true,
                             "text": "GO_TO_PAGE_A",
                             "target_page": "page_a"
                         }
