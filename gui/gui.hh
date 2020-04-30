@@ -9,17 +9,20 @@ class Object;
 class Screen;
 } // namespace gui
 
-class Gui
+class Gui: SdlPointer::EventDelegate
 {
   public:
     /// Constructor.
-    Gui(SdlDisplay & d, SdlPointer & p);
+    Gui(SdlDisplay & d, SdlPointer & p, gui::Screen & s);
     /// Loop until a quit is requested.
     int loop();
+    /// Act upon events notified by the pointer.
+    void on(const char key, bool pressed) override;
 
   private:
     SdlDisplay & display_;
     SdlPointer & pointer_;
+    gui::Screen & screen_;
 };
 
 namespace gui
@@ -40,9 +43,10 @@ class Screen: public Object
 {
   public:
     Screen();
+    lv_style_t * style();
 
   protected:
-    lv_theme_t * th_;
+    lv_style_t style_;
 };
 
 } // namespace gui

@@ -30,6 +30,9 @@
  * It allows for printing ANSI colors in terminal, and declutter filenames. */
 #define LV_LOG_PRINTF           0
 
+/* Use built-in styles. */
+#define LV_USE_THEME_DEFAULT    1
+
 /*=================
  * User data types
  *=================*/

@@ -2,8 +2,9 @@
 
 #include <SDL.h>
 
-SdlPointer::SdlPointer(int zoom)
-    : zoom_(zoom)
+SdlPointer::SdlPointer(EventDelegate * ed, int zoom)
+    : event_delegate_(ed)
+    , zoom_(zoom)
 {
     lv_indev_drv_init(&indev_drv_);
     indev_drv_.type = LV_INDEV_TYPE_POINTER;
@@ -18,6 +19,11 @@ void SdlPointer::enable()
 
 void SdlPointer::disable()
 {
+}
+
+void SdlPointer::attach(EventDelegate *ed)
+{
+    event_delegate_ = ed;
 }
 
 bool SdlPointer::mouse_read(lv_indev_drv_t * drv, lv_indev_data_t * data)
@@ -65,6 +71,16 @@ void SdlPointer::handle(int timeout_ms)
                 last_x_ = event.motion.x / zoom_;
                 last_y_ = event.motion.y / zoom_;
                 // No break, wait for next timeout.
+            }
+            else if (event_delegate_
+                    && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+                    && ((event.key.keysym.sym >= 'a'
+                                && event.key.keysym.sym <= 'z')
+                            || (event.key.keysym.sym >= '0'
+                                    && event.key.keysym.sym <= '9')))
+            {
+                event_delegate_->on(event.key.keysym.sym, event.key.state);
+                // No break, not concerning touch, directly report to delegate.
             }
         }
         else

@@ -6,12 +6,22 @@
 class SdlPointer
 {
   public:
+    /// Events delegate.
+    struct EventDelegate
+    {
+        virtual ~EventDelegate(){};
+        virtual void on(const char key, bool pressed){};
+    };
+
+  public:
     /// Constructor.
-    SdlPointer(int zoom = 1);
+    SdlPointer(EventDelegate * ed = nullptr, int zoom = 1);
     /// Enable driver.
     void enable();
     /// Disable driver.
     void disable();
+    /// Attach an event delegate. Or detach if no pointer.
+    void attach(EventDelegate * ed = nullptr);
     /// Handle events.
     void handle(int timeout_ms = 33);
     /// Read last event, return last touch state.
@@ -19,7 +29,9 @@ class SdlPointer
     /// Callback for LittlevGL.
     static bool mouse_read(lv_indev_drv_t * drv, lv_indev_data_t * data);
 
-  private:
+  protected:
+    /// Event binder.
+    EventDelegate * event_delegate_;
     /// Zoom factor.
     int zoom_;
     /// Last coordinates.

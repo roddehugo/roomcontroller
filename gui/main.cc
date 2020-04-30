@@ -151,7 +151,7 @@ int main(int argc, const char ** argv)
 
         gui::Screen screen;
 
-        Gui gui(display, pointer);
+        Gui gui(display, pointer, screen);
         return gui.loop();
     }
     catch (json::exception& e)
