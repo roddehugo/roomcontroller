@@ -73,158 +73,6 @@ static void page_event_cb(lv_obj_t * obj, lv_event_t event);
 static void language_event_cb(lv_obj_t * obj, lv_event_t event);
 static void background_event_cb(lv_obj_t * obj, lv_event_t event);
 
-/* FIXME: store this in plain json file once mostly done with prototyping. */
-static const auto& data = R"({
-    "app": {
-        "width": 800,
-        "height": 480,
-        "language": "en",
-        "page": "page_a",
-        "components": [
-            {
-                "id": "logo",
-                "type": "image",
-                "properties": {
-                    "x": 5,
-                    "y": 5,
-                    "source": "logo"
-                }
-            },
-            {
-                "id": "edit",
-                "type": "button",
-                "properties": {
-                    "x": 120,
-                    "y": 5,
-                    "text": "EDIT",
-                    "toggle": true,
-                    "target_edit": true
-                }
-            },
-            {
-                "id": "blue",
-                "type": "button",
-                "properties": {
-                    "x": 310,
-                    "y": 5,
-                    "text": "BLUE",
-                    "background_color": "blue",
-                    "target_background": "blue"
-                }
-            },
-            {
-                "id": "red",
-                "type": "button",
-                "properties": {
-                    "x": 400,
-                    "y": 5,
-                    "text": "RED",
-                    "background_color": "red",
-                    "target_background": "red"
-                }
-            },
-            {
-                "id": "french",
-                "type": "button",
-                "properties": {
-                    "x": 560,
-                    "y": 5,
-                    "text": "SWITCH_TO_FRENCH",
-                    "target_language": "fr"
-                }
-            },
-            {
-                "id": "english",
-                "type": "button",
-                "properties": {
-                    "x": 640,
-                    "y": 5,
-                    "text": "SWITCH_TO_ENGLISH",
-                    "target_language": "en"
-                }
-            }
-        ],
-        "pages": [
-            {
-                "id": "page_a",
-                "components": [
-                    {
-                        "id": "headline_page_a",
-                        "type": "label",
-                        "properties": {
-                            "x": 300,
-                            "y": 140,
-                            "width": 200,
-                            "text": "I_AM_PAGE_A"
-                        }
-                    },
-                    {
-                        "id": "go_to_page_b",
-                        "type": "button",
-                        "properties": {
-                            "x": 300,
-                            "y": 200,
-                            "width": 200,
-                            "text": "GO_TO_PAGE_B",
-                            "target_page": "page_b"
-                        }
-                    }
-                ]
-            },
-            {
-                "id": "page_b",
-                "components": [
-                    {
-                        "id": "headline_page_b",
-                        "type": "label",
-                        "properties": {
-                            "x": 300,
-                            "y": 140,
-                            "width": 200,
-                            "text": "I_AM_PAGE_B"
-                        }
-                    },
-                    {
-                        "id": "go_to_page_a",
-                        "type": "button",
-                        "properties": {
-                            "x": 300,
-                            "y": 200,
-                            "width": 200,
-                            "text": "GO_TO_PAGE_A",
-                            "target_page": "page_a"
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    "translations": {
-        "en": {
-            "EDIT": "Edit",
-            "RED": "Red",
-            "BLUE": "Blue",
-            "SWITCH_TO_FRENCH": "FR",
-            "SWITCH_TO_ENGLISH": "EN",
-            "I_AM_PAGE_A": "I am page A",
-            "GO_TO_PAGE_A": "Go to page A",
-            "I_AM_PAGE_B": "I am page B",
-            "GO_TO_PAGE_B": "Go to page B"
-        },
-        "fr": {
-            "EDIT": "Editer",
-            "RED": "Rouge",
-            "BLUE": "Bleu",
-            "SWITCH_TO_FRENCH": "FR",
-            "SWITCH_TO_ENGLISH": "EN",
-            "I_AM_PAGE_A": "Je suis la page A",
-            "GO_TO_PAGE_A": "Aller a la page A",
-            "I_AM_PAGE_B": "Je suis la page B",
-            "GO_TO_PAGE_B": "Aller a la page B"
-        }
-    }
-})";
-
 enum ComponentType
 {
     OBJECT,
@@ -649,9 +497,19 @@ int main(int argc, const char ** argv)
     lv_log_register_print_cb(&Logger::log);
     lv_init();
 
+    // Open input file stream.
+    std::ifstream ifdata("gui.json");
+    assert(ifdata.is_open());
+
     try
     {
-        auto j = json::parse(data);
+        // Parse json data.
+        json j;
+        ifdata >> j;
+
+        // Close file now if successful.
+        ifdata.close();
+
         const auto & app = j["app"];
         const auto width = app["width"].get<int>();
         assert(width <= LV_HOR_RES_MAX);
