@@ -25,21 +25,37 @@ class Result:
 
 
 class Runner:
-    def __init__(self, jobs, targets):
+    def __init__(self, jobs, targets, clean):
         self.jobs = jobs
         self.targets = targets
+        self.clean = clean
 
-    def run(self, d, r, stdout):
-        stdout.flush()
-        cmd = ['make', '-j', str(self.jobs), '-C', d] + self.targets
+    def get_clean_command(self, d):
+        return ['make', '-C', d, 'clean']
+
+    def get_targets_command(self, d):
+        return ['make', '-j', str(self.jobs), '-C', d] + self.targets
+
+    def run_command(self, cmd, stdout):
         ret = subprocess.call(cmd, stdout=stdout)
-        if ret == 0:
-            passed = True
-        else:
-            passed = False
+        return ret == 0
+
+    def handle_result(self, d, r, passed):
+        if not passed:
             r.fails += 1
             r.failed.append(d)
         return passed
+
+    def run(self, d, r, stdout):
+        stdout.flush()
+        passed = True
+        if self.clean:
+            cmd = self.get_clean_command(d)
+            passed = self.run_command(cmd, stdout)
+        if passed:
+            cmd = self.get_targets_command(d)
+            passed = self.run_command(cmd, stdout)
+        return self.handle_result(d, r, passed)
 
 
 if __name__ == "__main__":
@@ -55,6 +71,8 @@ if __name__ == "__main__":
     p.add_argument('-j', '--jobs', type=int, metavar='JOBS',
             dest = 'jobs', default=8,
             help='parallel build job count to use (passed to make)')
+    p.add_argument('--clean', action='store_true', default=False,
+            help='perform a make clean before targets')
 
     options = p.parse_args()
 
@@ -73,7 +91,7 @@ if __name__ == "__main__":
         dirs = [ d for d in dirs if d not in exclude_set ]
 
     result = Result()
-    runner = Runner(options.jobs, options.targets)
+    runner = Runner(options.jobs, options.targets, options.clean)
     out = sys.stdout if options.verbose else open(os.devnull, 'w')
     for d in dirs:
         print('>>>', d)
