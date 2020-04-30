@@ -143,6 +143,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentType,
     {LABEL, "label"},
 })
 
+static void describe(const char * who, const lv_obj_t * obj)
+{
+    ltrace("%s pos=(%d,%d) size=(%d,%d)", who,
+            lv_obj_get_x(obj), lv_obj_get_y(obj),
+            lv_obj_get_width(obj), lv_obj_get_height(obj));
+}
+
 template <ComponentType T>
 static lv_obj_t * draw_object(const json & o,
         lv_obj_t * parent, lv_obj_t * obj = nullptr)
@@ -182,6 +189,7 @@ lv_obj_t * draw_object<OBJECT>(const json & o,
                 o["height"].get<int>(), lv_obj_get_height(obj));
     }
 
+    describe("object", obj);
     return obj;
 }
 
