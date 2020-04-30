@@ -28,6 +28,9 @@ static lv_style_t * screen_style;
 static lv_style_t red_style;
 static lv_style_t blue_style;
 
+/* FIXME: use a memory monitor wrapper. */
+static lv_task_t * sysmon_task;
+
 /* FIXME: use more appropriate wrapper around objects.
  * Use lv_obj_allocate_ext_attr with user defined extended data. This brings
  * some of the OO paradigms to C structs, see well documented article in blog:
@@ -492,11 +495,44 @@ static void background_event_cb(lv_obj_t * obj, lv_event_t event)
     }
 }
 
-int main(int argc, const char ** argv)
+static void sysmon_handler(lv_task_t * task)
 {
-    // Register custom logger and initialize lvgl.
+    lv_mem_monitor_t mm;
+    lv_mem_monitor(&mm);
+    unsigned kb = mm.total_size / 1024;
+    lwarn("memory kb=%u used=%d%% frag=%d%%", kb, mm.used_pct, mm.frag_pct);
+}
+
+static void lvgl_init()
+{
     lv_log_register_print_cb(&Logger::log);
     lv_init();
+}
+
+static void sysmon_init()
+{
+    unsigned period_ms = 10000; // 10 seconds.
+    lv_task_prio_t prio = LV_TASK_PRIO_LOW;
+    sysmon_task = lv_task_create(sysmon_handler, period_ms, prio, nullptr);
+    assertm(sysmon_task, "memory monitor task failed");
+}
+
+static void sysmon_deinit()
+{
+    assertm(sysmon_task, "no memory monitor task");
+    lv_task_del(sysmon_task);
+    sysmon_task = nullptr;
+}
+
+int main(int argc, const char ** argv)
+{
+    // Initialize lvgl core.
+    lvgl_init();
+    std::atexit(lv_deinit);
+
+    // Initialize system monitor task.
+    sysmon_init();
+    std::atexit(sysmon_deinit);
 
     // Open input file stream.
     std::ifstream ifdata("gui.json");
