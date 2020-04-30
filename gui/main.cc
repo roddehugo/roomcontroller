@@ -494,6 +494,7 @@ static void background_event_cb(lv_obj_t * obj, lv_event_t event)
 
 int main(int argc, const char ** argv)
 {
+    // Register custom logger and initialize lvgl.
     lv_log_register_print_cb(&Logger::log);
     lv_init();
 
@@ -510,6 +511,7 @@ int main(int argc, const char ** argv)
         // Close file now if successful.
         ifdata.close();
 
+        // Fetch display size from json data.
         const auto & app = j["app"];
         const auto width = app["width"].get<int>();
         assert(width <= LV_HOR_RES_MAX);
@@ -517,6 +519,7 @@ int main(int argc, const char ** argv)
         assert(height <= LV_VER_RES_MAX);
         linfo("app width=%3d height=%3d", width, height);
 
+        // Fetch app language from json data.
         language = app["language"].get_ptr<const json::string_t *>();
         assertm(language, "no language pointer");
         translations = &j["translations"];
@@ -524,14 +527,18 @@ int main(int argc, const char ** argv)
         const auto & localized = translations->at(*language);
         linfo("app language=%s size=%lu", language->c_str(), localized.size());
 
+        // Initialize display and pointer with sdl backend.
         SdlDisplay display(width, height);
         SdlPointer pointer;
 
+        // Initialize screen holding theme and background style.
         gui::Screen screen;
         screen_style = screen.style();
 
+        // Initialize gui with injected dependencies.
         Gui gui(display, pointer, screen);
 
+        // Create new button styles for color buttons.
         auto * theme = lv_theme_get_current();
         lv_style_copy(&red_style, theme->style.btn.rel);
         red_style.body.main_color = LV_COLOR_RED;
@@ -540,6 +547,7 @@ int main(int argc, const char ** argv)
         blue_style.body.main_color = LV_COLOR_BLUE;
         blue_style.body.grad_color = LV_COLOR_BLUE;
 
+        // Create top container inside screen.
         lv_obj_t * top = lv_cont_create(screen.get(), nullptr);
         describe("top after creation", top);
 
@@ -551,15 +559,17 @@ int main(int argc, const char ** argv)
         lv_cont_set_style(top, LV_CONT_STYLE_MAIN, screen_style);
         describe("top after layout", top);
 
+        // Draw components belonging to the top container.
         draw_components(app["components"], top);
         describe("top after components", top);
 
+        // Create pages container as a tabview without buttons bar.
         lv_obj_t * pages = lv_tabview_create(screen.get(), nullptr);
-        describe("pages after creation", pages);
-
         lv_tabview_set_sliding(pages, false);
         lv_tabview_set_btns_hidden(pages, true);
         lv_tabview_set_style(pages, LV_TABVIEW_STYLE_BG, screen_style);
+        describe("pages after creation", pages);
+
         /* TODO: understand when this is needed, and why? */
         /* lv_obj_set_auto_realign(pages, true); */
         /* FIXME: why do I have to compute it by myself? I'd expect the layout
@@ -570,9 +580,11 @@ int main(int argc, const char ** argv)
         lv_obj_set_height(pages, height - lv_obj_get_height(top) - p * 3);
         describe("pages after components", pages);
 
+        // Draw components belonging to the pages container.
         draw_pages(app["pages"], pages);
         describe("pages after components", pages);
 
+        // Loop until application properly exits.
         return gui.loop();
     }
     catch (json::exception& e)
