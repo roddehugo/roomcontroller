@@ -1,4 +1,4 @@
-# Ubuntu Core for embedded devices
+# Ubuntu Core for Embedded Devices
 
 ## Raspberry Pi
 
