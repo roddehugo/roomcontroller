@@ -64,7 +64,7 @@ static void test_sstream()
 
     // Perform basic checks.
     assert(!j.empty());
-    assert(j.is_array());
+    assert(j.is_object());
 
     // Serialize JSON.
     std::cout << "json contains " << j.size() << " items" << std::endl;
@@ -166,7 +166,7 @@ static void test_struct()
 
     // Perform basic checks.
     assert(!j.empty());
-    assert(j.is_array());
+    assert(j.is_object());
 
     // Report parsed data.
     auto obj = j.get<ns::object>();
