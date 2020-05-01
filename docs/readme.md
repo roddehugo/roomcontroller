@@ -1,4 +1,4 @@
-# Documentation
+# Room Controller - Documentation
 
 In this directory, one can find documentation and study reports about various
 topics.
