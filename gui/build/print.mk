@@ -5,15 +5,8 @@
 print-%:
 	@echo $*=$($*)
 
-# Output compiler version.
-print-version:
-	@echo "CC  --version"
-	$(shell $(CC) --version)
-	@echo "CXX --version"
-	$(shell $(CXX) --version)
-
 # Output flags, one per line.
-print-flags:
+show-flags:
 	@echo "CFLAGS"
 	@echo $(CFLAGS)
 	@echo "ASFLAGS"
