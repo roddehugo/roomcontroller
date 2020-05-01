@@ -155,7 +155,7 @@
 
 /* Enable button-state animations (dependencies: animation). */
 #ifndef LV_BTN_INK_EFFECT
-#  define LV_BTN_INK_EFFECT             0
+#  define LV_BTN_INK_EFFECT             1
 #endif
 
 /* Button matrix (dependencies: -). */
@@ -165,12 +165,12 @@
 
 /* Calendar (dependencies: -). */
 #ifndef LV_USE_CALENDAR
-#  define LV_USE_CALENDAR               0
+#  define LV_USE_CALENDAR               1
 #endif
 
 /* Canvas (dependencies: lv_img). */
 #ifndef LV_USE_CANVAS
-#  define LV_USE_CANVAS                 0
+#  define LV_USE_CANVAS                 1
 #endif
 
 /* Check box (dependencies: lv_btn, lv_label). */
@@ -180,7 +180,7 @@
 
 /* Chart (dependencies: -). */
 #ifndef LV_USE_CHART
-#  define LV_USE_CHART                  0
+#  define LV_USE_CHART                  1
 #endif
 
 /* Define tick axis label max len to saner value:
