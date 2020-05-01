@@ -127,6 +127,7 @@ template <ComponentType T>
 static lv_obj_t * draw_object(const json & o,
         lv_obj_t * parent, lv_obj_t * obj = nullptr)
 {
+    return nullptr;
 }
 
 template <>
