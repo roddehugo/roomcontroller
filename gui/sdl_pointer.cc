@@ -1,7 +1,5 @@
 #include "sdl_pointer.hh"
 
-#include <SDL.h>
-
 SdlPointer::SdlPointer(EventDelegate * ed, int zoom)
     : event_delegate_(ed)
     , zoom_(zoom)
