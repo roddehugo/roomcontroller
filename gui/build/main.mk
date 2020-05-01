@@ -55,11 +55,11 @@ vpath %.S $(BASE)
 vpath %.c $(BASE)
 vpath %.cc $(BASE)
 
-# Include flags.
-include $(BUILD)/flags.mk
-
 # Include target specific flags.
 include $(BUILD)/$(TARGET).mk
+
+# Include flags.
+include $(BUILD)/flags.mk
 
 # Decline objects from source files.
 .SECONDARY: $(OBJS)
