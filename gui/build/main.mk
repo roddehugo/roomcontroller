@@ -106,7 +106,7 @@ include $(BUILD)/deps.mk
 # Making rules.
 $(PROGRAM).bin: $(OBJS) $(LIBDEPS)
 	@echo "LD    $@"
-	$(Q)$(LD) $(LDFLAGS) $(LDLIBS) $(OBJS) -o $@
+	$(Q)$(LD) $(OBJS) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(OBJDIR)/%.o: %.S $(OBJDIR)/defs.old | $(OBJDIR)
 	@echo "AS    $<"
