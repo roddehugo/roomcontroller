@@ -83,7 +83,8 @@ if __name__ == "__main__":
     if options.include:
         dirs = options.include
     else:
-        files = subprocess.check_output(['git', 'ls-files'], text=True).split('\n')
+        files = subprocess.check_output(['git', 'ls-files'],
+                universal_newlines=True).split('\n')
         dirs = [ os.path.dirname(f) for f in files if f.endswith('/Makefile') ]
 
     if options.exclude:
