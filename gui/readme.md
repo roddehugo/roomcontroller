@@ -67,7 +67,7 @@ Open a terminal, amazing things happen there!
 In case you don't have a compiler already, you may install:
 
     apt-get update
-    apt-get build-essential
+    apt-get install build-essential
 
 Then, get the SDL2 library with developer files, and other dependencies:
 
