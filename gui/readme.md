@@ -10,7 +10,7 @@ This module hosts the Room Controller Graphical User Interface.
     │   ├── json
     │   │   ├── json # nlohmann/json git submodule.
     │   │   ├── json.mk # make module for library.
-    │       ├── readme.md # module instructions.
+    │   │   ├── readme.md # module instructions.
     │   │   └── test # test module, for compilation and library playground.
     │   └── lvgl
     │       ├── lv_defaults.h # library wide defaults, mostly enable everything.
