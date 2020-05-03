@@ -1,7 +1,5 @@
 #include "gui.hh"
 
-#include "logger.hh"
-
 Gui::Gui(SdlDisplay & d, SdlPointer & p, gui::Screen & s)
     : display_(d)
     , pointer_(p)
@@ -51,7 +49,6 @@ void Gui::on(const char key, bool pressed)
             break;
         }
         default:
-            /* ltrace("event key='%c' pressed=%d", key, pressed); */
             break;
     }
 }
