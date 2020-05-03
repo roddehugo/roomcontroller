@@ -5,7 +5,6 @@ This module hosts the Room Controller Graphical User Interface.
 ## Structure
 
     ├── build # build system with make rules, flags and options.
-    ├── img # images required by the app, stored as C header or binary files.
     ├── lib # external dependencies, part of the compilation unit.
     │   ├── json
     │   │   ├── json # nlohmann/json git submodule.
@@ -22,12 +21,9 @@ This module hosts the Room Controller Graphical User Interface.
     │       ├── lvgl.mk # make module for library.
     │       ├── readme.md # module instructions.
     │       └── test # test module, for compilation and library playground.
-    ├── Makefile # project makefile, compilation entry point.
-    ├── lv_conf.h # project scope defaults, overides lv_defaults.h.
-    ├── main.cc # project main entry point, monolithic structure.
     ├── gui # gui module to orchestrate program's busy loop.
-    ├── gui-default.json # Gui JSON markup to describe.
     ├── logger # logging module, with ANSI colors, several levels.
+    ├── project # project module, where live all applications.
     ├── sdl # SDL display and pointers drivers for LVGL.
     └── readme.md # what your are reading.
 
@@ -43,10 +39,19 @@ tests one can run to make sure the library is running fine.
 
 Please refer to the readme inside each dependency for further instructions.
 
-## Application
+## Projects
 
-The main application starts in `main.cc`. And the project is built using the
+All projects, i.e. programs with a `main` entry point, lives in the `project`
+directory.
+
+### Application
+
+The main application lives in `project/app`. And the project is built using the
 `Makefile` at the same level in working tree.
+
+In short, from this directory, one could run the main app with:
+
+    make -C project/app run
 
 ## Requirements
 

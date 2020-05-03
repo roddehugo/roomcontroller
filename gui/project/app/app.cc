@@ -621,8 +621,8 @@ int main(int argc, const char ** argv)
     std::atexit(sysmon_deinit);
 
     // Input and output file names.
-    const auto & ifile = "gui-default.json";
-    const auto & ofile = "gui-updated.json";
+    const auto & ifile = "default.json";
+    const auto & ofile = "updated.json";
 
     // First try to restore previously saved gui.
     std::ifstream ifdata;

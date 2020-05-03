@@ -1,11 +1,9 @@
-BASE = .
+BASE = ../..
 
 TARGET = host
 
-PROGRAM = gui
-
-SOURCES = main.cc
-SOURCES += img/logo.c
+PROGRAM = app
+SOURCES = app.cc img/logo.c
 
 include $(BASE)/gui/gui.mk
 include $(BASE)/sdl/sdl.mk

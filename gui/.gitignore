@@ -8,6 +8,3 @@
 
 # Build system
 obj/
-
-# Application data
-gui-updated.json
