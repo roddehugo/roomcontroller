@@ -25,7 +25,7 @@ This module hosts the Room Controller Graphical User Interface.
     ├── Makefile # project makefile, compilation entry point.
     ├── lv_conf.h # project scope defaults, overides lv_defaults.h.
     ├── main.cc # project main entry point, monolithic structure.
-    ├── gui.{hh,cc} # Gui class to orchestrate program's busy loop.
+    ├── gui # gui module to orchestrate program's busy loop.
     ├── gui-default.json # Gui JSON markup to describe.
     ├── logger # logging module, with ANSI colors, several levels.
     ├── sdl # SDL display and pointers drivers for LVGL.

@@ -1,4 +1,4 @@
-#include "gui.hh"
+#include "gui/gui.hh"
 #include "logger/logger.hh"
 #include "lvgl/lvgl.h"
 
