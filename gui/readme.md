@@ -14,7 +14,7 @@ This module hosts the Room Controller Graphical User Interface.
     │   │   └── test # test module, for compilation and library playground.
     │   └── lvgl
     │       ├── lv_defaults.h # library wide defaults, mostly enable everything.
-    │       ├── lv_drv_defaults.h # same for the drivers, actually not used.
+    │       ├── lv_drv_defaults.h # same for the drivers.
     │       ├── lv_drivers # littlevgl/lv_drivers git submodule.
     │       ├── lvgl # littlevgl/lvgl git submodule.
     │       ├── lvgl.mk # make module for library.
