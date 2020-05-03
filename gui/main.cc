@@ -1,5 +1,5 @@
 #include "gui.hh"
-#include "logger.hh"
+#include "logger/logger.hh"
 #include "lvgl/lvgl.h"
 
 #include <fstream>

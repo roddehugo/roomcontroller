@@ -27,7 +27,7 @@ This module hosts the Room Controller Graphical User Interface.
     ├── main.cc # project main entry point, monolithic structure.
     ├── gui.{hh,cc} # Gui class to orchestrate program's busy loop.
     ├── gui-default.json # Gui JSON markup to describe.
-    ├── logger.{hh,cc} # project logger, with ANSI colors, all levels.
+    ├── logger # logging module, with ANSI colors, several levels.
     ├── sdl # SDL display and pointers drivers for LVGL.
     └── readme.md # what your are reading.
 
