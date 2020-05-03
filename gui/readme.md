@@ -22,7 +22,6 @@ This module hosts the Room Controller Graphical User Interface.
     │       └── test # test module, for compilation and library playground.
     ├── Makefile # project makefile, compilation entry point.
     ├── lv_conf.h # project scope defaults, overides lv_defaults.h.
-    ├── lv_drv_conf.h # project scope defaults, overides lv_drv_defaults.h.
     ├── main.cc # project main entry point, monolithic structure.
     ├── gui.{hh,cc} # Gui class to orchestrate program's busy loop.
     ├── gui-default.json # Gui JSON markup to describe.
