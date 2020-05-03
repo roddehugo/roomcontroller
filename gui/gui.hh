@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sdl_display.hh"
-#include "sdl_pointer.hh"
+#include "sdl/sdl_display.hh"
+#include "sdl/sdl_pointer.hh"
 
 namespace gui
 {
