@@ -4,6 +4,9 @@
 [submodule "gui/lib/lvgl/lv_drivers"]
 	path = gui/lib/lvgl/lv_drivers
 	url = https://github.com/littlevgl/lv_drivers.git
+[submodule "gui/lib/lvgl/lv_examples"]
+	path = gui/lib/lvgl/lv_examples
+	url = https://github.com/littlevgl/lv_examples.git
 [submodule "gui/lib/json/json"]
 	path = gui/lib/json/json
 	url = https://github.com/nlohmann/json.git
