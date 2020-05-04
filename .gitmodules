@@ -1,12 +1,12 @@
 [submodule "gui/lib/lvgl/lvgl"]
 	path = gui/lib/lvgl/lvgl
-	url = https://github.com/littlevgl/lvgl.git
+	url = https://github.com/roddehugo/lvgl.git
 [submodule "gui/lib/lvgl/lv_drivers"]
 	path = gui/lib/lvgl/lv_drivers
-	url = https://github.com/littlevgl/lv_drivers.git
+	url = https://github.com/roddehugo/lv_drivers
 [submodule "gui/lib/lvgl/lv_examples"]
 	path = gui/lib/lvgl/lv_examples
-	url = https://github.com/littlevgl/lv_examples.git
+	url = https://github.com/roddehugo/lv_examples
 [submodule "gui/lib/json/json"]
 	path = gui/lib/json/json
 	url = https://github.com/nlohmann/json.git
