@@ -38,7 +38,8 @@ int main(int argc, char **argv)
         exit(3);
     }
 
-    printf("%dx%d, %dbpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
+    printf("%dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
+    printf("rotate=%d\n", vinfo.rotate);
     printf("activate=%d\n", vinfo.activate);
 
     /* Figure out the size of the screen in bytes. */
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
                 *(fbp + location + 2) = 200-(y-100)/5;  // A lot of red.
                 *(fbp + location + 3) = 0;              // No transparency.
             }
-            else // Assume 16bpp.
+            else // Assume 16 bpp.
             {
                 int b = 10;             // Some blue.
                 int g = (x-100)/6;      // A little green.

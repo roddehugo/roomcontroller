@@ -28,6 +28,8 @@ int main(int argc, char* argv[])
         exit(2);
     }
     printf("%dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel);
+    printf("rotate=%d\n", vinfo.rotate);
+    printf("activate=%d\n", vinfo.activate);
 
     /* Blank display. */
     if (ioctl(fbfd, FBIOBLANK, 0))
